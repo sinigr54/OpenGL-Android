@@ -2,9 +2,7 @@ package com.example.sinigr.openglcourse
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import com.example.sinigr.openglcourse.glcore.NativeService
 import com.example.sinigr.openglcourse.glcore.view.GLView
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 

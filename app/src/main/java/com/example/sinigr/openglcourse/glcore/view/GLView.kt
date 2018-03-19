@@ -2,7 +2,7 @@ package com.example.sinigr.openglcourse.glcore.view
 
 import android.content.Context
 import android.opengl.GLSurfaceView
-import com.example.sinigr.openglcourse.glcore.renderer.GlRenderer
+import com.example.sinigr.openglcourse.glcore.renderer.NativeRenderer
 
 class GLView(context: Context) : GLSurfaceView(context) {
     companion object {
@@ -11,7 +11,7 @@ class GLView(context: Context) : GLSurfaceView(context) {
         private const val GL_VERSION = 3
     }
 
-    private val renderer = GlRenderer()
+    private val renderer = NativeRenderer()
 
     init {
         setEGLContextClientVersion(GL_VERSION)

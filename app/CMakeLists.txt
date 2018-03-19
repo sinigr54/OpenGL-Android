@@ -36,9 +36,14 @@ find_library( # Sets the name of the path variable.
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.
 
+target_include_directories(glcore PRIVATE
+           src/main/cpp
+           ${ANDROID_NDK}/sources/third_party/vulkan/src/libs/glm)
+
 target_link_libraries( # Specifies the target library.
                        glcore
-
+                       GLESv3
+                       android
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib} )
