@@ -3,7 +3,7 @@
 
 #define JNI_METHOD(return_type, method_name) \
   extern "C" JNIEXPORT return_type JNICALL              \
-      Java_com_example_sinigr_nativetest_MainActivity_##method_name
+      Java_com_example_sinigr_openglcourse_glcore_NativeService_##method_name
 
 JNI_METHOD(jstring, stringFromJNI)
 (JNIEnv *env, jobject /* this */) {
