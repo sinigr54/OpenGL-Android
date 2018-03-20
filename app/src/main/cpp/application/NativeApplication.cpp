@@ -5,7 +5,7 @@
 #include "NativeApplication.h"
 
 NativeApplication::NativeApplication(AAssetManager *assetManager)
-        : assetManager(assetManager) {
+        : renderer(assetManager) {
 
 }
 

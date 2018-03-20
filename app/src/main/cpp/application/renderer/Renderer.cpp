@@ -6,25 +6,6 @@
 #include <utils/ShaderUtils.h>
 #include "Renderer.h"
 
-constexpr char vertexShaderSource[] = R"(
-#version 300 es
-
-layout (location = 0) in vec3 position;
-
-void main() {
-   gl_Position = vec4(position.x, position.y, position.z, 1.0f);
-})";
-
-constexpr char fragmentShaderSource[] = R"(
-#version 300 es
-
-out vec4 color;
-
-void main()
-{
-	color = vec4(1.0f, 0.5f, 0.2f, 1.0f);
-})";
-
 GLuint gShaderProgram = 0;
 GLuint VBO = 0;
 GLuint VAO = 0;
@@ -41,6 +22,10 @@ GLuint indices[] = {
         0, 1, 3,
         1, 2, 3
 };
+
+Renderer::Renderer(AAssetManager *assetManager) : assetManager(assetManager) {
+
+}
 
 void Renderer::onSurfaceCreated() {
     glGenBuffers(1, &VBO);
@@ -61,7 +46,11 @@ void Renderer::onSurfaceCreated() {
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-    gShaderProgram = ShaderUtils::createProgram(vertexShaderSource, fragmentShaderSource);
+    gShaderProgram = ShaderUtils::createProgram(
+            assetManager,
+            "vertex_shader.glsl",
+            "fragment_shader.glsl"
+    );
 }
 
 void Renderer::onSurfaceChanged(int width, int height) {

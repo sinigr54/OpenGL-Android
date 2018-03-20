@@ -8,6 +8,8 @@
 #include <GLES3/gl3.h>
 #include <android/log.h>
 #include <stdlib.h>
+#include <string>
+#include <android/asset_manager.h>
 
 #ifndef LOGI
 #define LOGI(...) \
@@ -24,7 +26,14 @@ class ShaderUtils {
 
     static GLuint loadShader(GLenum sharedType, const char *shaderSource);
 
+    static std::string loadShaderFromFile(AAssetManager *assetManager,
+                                    const std::string &fileName);
+
 public:
+    static GLuint createProgram(AAssetManager *assetManager,
+                                const std::string &vertexShaderFile,
+                                const std::string &fragmentShaderFile);
+
     static GLuint createProgram(const char *vertexSource, const char *fragment_source);
 };
 

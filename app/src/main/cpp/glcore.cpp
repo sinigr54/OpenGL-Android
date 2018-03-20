@@ -6,7 +6,7 @@
 
 #define JNI_METHOD(return_type, method_name) \
   extern "C" JNIEXPORT return_type JNICALL              \
-      Java_com_example_sinigr_openglcourse_application_NativeApplication_##method_name
+      Java_com_example_sinigr_openglcourse_application_NativeInterface_##method_name
 
 NativeApplication *nativeApplication;
 
