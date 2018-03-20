@@ -42,6 +42,10 @@ GLuint indices[] = {
         1, 2, 3
 };
 
+Renderer::Renderer(AAssetManager *assetManager) : assetManager(assetManager) {
+
+}
+
 void Renderer::onSurfaceCreated() {
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -61,7 +65,12 @@ void Renderer::onSurfaceCreated() {
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-    gShaderProgram = ShaderUtils::createProgram(vertexShaderSource, fragmentShaderSource);
+    gShaderProgram = ShaderUtils::createProgram(
+            assetManager,
+            "vertex_shader.glsl",
+            "fragment_shader.glsl");
+
+//    gShaderProgram = ShaderUtils::createProgram(vertexShaderSource, fragmentShaderSource);
 }
 
 void Renderer::onSurfaceChanged(int width, int height) {

@@ -2,6 +2,7 @@
 // Created by sinigr on 3/19/18.
 //
 
+#include <android/asset_manager.h>
 #include "ShaderUtils.h"
 
 void ShaderUtils::checkGlError(const char *operation) {
@@ -9,6 +10,31 @@ void ShaderUtils::checkGlError(const char *operation) {
         LOGE("after %s() glError (0x%x)\n", operation, error);
         abort();
     }
+}
+
+
+std::string ShaderUtils::loadShaderFromFile(AAssetManager *assetManager,
+                                            const std::string &fileName) {
+    AAsset *asset = AAssetManager_open(assetManager,
+                                       fileName.c_str(),
+                                       AASSET_MODE_STREAMING);
+    if (asset == nullptr) {
+        LOGE("Error opening asset %s", fileName.c_str());
+        return 0;
+    }
+
+    off_t fileSize = AAsset_getLength(asset);
+    std::string fileBuffer;
+    fileBuffer.resize(fileSize);
+    int result = AAsset_read(asset, &fileBuffer.front(), fileSize);
+    if (result < 0 || result == EOF) {
+        LOGE("Failed to open file: %s", fileName.c_str());
+        AAsset_close(asset);
+        return 0;
+    }
+
+    AAsset_close(asset);
+    return fileBuffer;
 }
 
 GLuint ShaderUtils::loadShader(GLenum sharedType, const char *shaderSource) {
@@ -88,6 +114,13 @@ GLuint ShaderUtils::createProgram(const char *vertexSource, const char *fragment
     return program;
 }
 
+GLuint ShaderUtils::createProgram(AAssetManager *assetManager,
+                                  const std::string &vertexShaderFile,
+                                  const std::string &fragmentShaderFile) {
 
+    std::string vertexShader = loadShaderFromFile(assetManager, vertexShaderFile);
+    std::string fragmentShader = loadShaderFromFile(assetManager, fragmentShaderFile);
 
+    return createProgram(vertexShader.c_str(), fragmentShader.c_str());
+}
 

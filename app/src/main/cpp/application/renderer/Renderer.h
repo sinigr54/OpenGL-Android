@@ -7,7 +7,10 @@
 
 
 class Renderer {
+    AAssetManager *const assetManager;
 public:
+    Renderer(AAssetManager *assetManager);
+
     void onSurfaceCreated();
 
     void onSurfaceChanged(int width, int height);

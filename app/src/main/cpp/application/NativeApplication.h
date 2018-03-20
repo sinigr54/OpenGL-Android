@@ -11,7 +11,6 @@
 #include "renderer/Renderer.h"
 
 class NativeApplication {
-    AAssetManager const* assetManager;
     Renderer renderer;
 
 public:
