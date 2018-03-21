@@ -2,6 +2,7 @@ package com.example.sinigr.openglcourse.glcore.view
 
 import android.content.Context
 import android.opengl.GLSurfaceView
+import android.view.MotionEvent
 import com.example.sinigr.openglcourse.glcore.renderer.NativeRenderer
 
 class GLView(context: Context) : GLSurfaceView(context) {
@@ -19,5 +20,15 @@ class GLView(context: Context) : GLSurfaceView(context) {
         setRenderer(renderer)
 
         renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        when (event?.action) {
+            MotionEvent.ACTION_MOVE -> {
+                requestRender()
+            }
+        }
+
+        return true
     }
 }
