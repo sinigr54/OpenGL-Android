@@ -6,6 +6,11 @@
 #include <utils/RenderUtils.h>
 #include <utils/Random.h>
 #include "Renderer.h"
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>
+#include <ctime>
+#include <sstream>
 
 const std::string TAG = "Rendered";
 
@@ -15,7 +20,8 @@ GLuint VBO = 0;
 GLuint VAO = 0;
 GLuint IBO = 0;
 
-GLuint gTexture = 0;
+GLuint gTexture1 = 0;
+GLuint gTexture2 = 0;
 
 /*
  * 4 x (3 координаты вершин, 3 параметра цвета, 2 координаты текстуры)
@@ -47,13 +53,23 @@ void Renderer::onSurfaceCreated() {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(gVertices), gVertices, GL_STATIC_DRAW);
 
-    glGenTextures(1, &gTexture);
-    glBindTexture(GL_TEXTURE_2D, gTexture);
+    glGenTextures(1, &gTexture1);
+    glBindTexture(GL_TEXTURE_2D, gTexture1);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 
     RenderUtils::bindTextureSource(GL_TEXTURE_2D, "container.jpg");
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glGenTextures(1, &gTexture2);
+    glBindTexture(GL_TEXTURE_2D, gTexture2);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+
+    RenderUtils::bindTextureSource(GL_TEXTURE_2D, "awesomeface.png");
     glGenerateMipmap(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -76,8 +92,6 @@ void Renderer::onSurfaceCreated() {
     glEnableVertexAttribArray(2);
 
     glBindVertexArray(0);
-
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 void Renderer::onSurfaceChanged(int width, int height) {
@@ -85,12 +99,35 @@ void Renderer::onSurfaceChanged(int width, int height) {
 }
 
 void Renderer::onDrawFrame() {
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(gShaderProgram);
-    glBindTexture(GL_TEXTURE_2D, gTexture);
+
+    GLint transformLocation = glGetUniformLocation(gShaderProgram, "transform");
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, gTexture1);
+    glUniform1i(glGetUniformLocation(gShaderProgram, "texture1"), 0);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, gTexture2);
+    glUniform1i(glGetUniformLocation(gShaderProgram, "texture2"), 1);
     glBindVertexArray(VAO);
 
+    glm::mat4 transform;
+    transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
+    transform = glm::rotate(transform, static_cast<GLfloat>(clock() * 50.0f),
+                            glm::vec3(0.0, 0.0, 1.0));
+
+    glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(transform));
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    transform = glm::mat4();
+    transform = glm::translate(transform, glm::vec3(-0.5f, 0.5f, 0.0f));
+    GLfloat scale = static_cast<GLfloat>(sin(clock()));
+    transform = glm::scale(transform, glm::vec3(scale, scale, scale));
+
+    glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(transform));
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     glBindVertexArray(0);

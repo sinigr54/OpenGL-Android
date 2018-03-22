@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         NativeInterface.onPause()
         glView.onPause()
+        glView.stop()
     }
 
     override fun onResume() {
@@ -31,5 +32,6 @@ class MainActivity : AppCompatActivity() {
 
         NativeInterface.onResume(applicationContext, this)
         glView.onResume()
+        glView.start()
     }
 }
