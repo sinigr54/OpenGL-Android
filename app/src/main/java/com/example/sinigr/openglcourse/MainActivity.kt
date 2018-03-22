@@ -12,6 +12,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        NativeInterface.assetManager = assets
         NativeInterface.createNativeApplication(assets)
 
         glView = GLView(this)

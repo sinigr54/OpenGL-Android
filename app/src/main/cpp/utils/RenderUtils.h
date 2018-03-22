@@ -9,6 +9,7 @@
 #include <android/log.h>
 #include <stdlib.h>
 #include <string>
+#include <jni.h>
 #include <android/asset_manager.h>
 
 #ifndef LOGI
@@ -21,15 +22,21 @@
   __android_log_print(ANDROID_LOG_ERROR, "OpenGLCourse", __VA_ARGS__)
 #endif  // LOGE
 
-class ShaderUtils {
+class RenderUtils {
     static void checkGlError(const char *operation);
 
     static GLuint loadShader(GLenum sharedType, const char *shaderSource);
 
     static std::string loadShaderFromFile(AAssetManager *assetManager,
-                                    const std::string &fileName);
+                                          const std::string &fileName);
+
+    static JNIEnv *jniEnvironment();
+
+    static jclass findClass(const char *classname);
 
 public:
+    static bool bindTextureSource(int target, const std::string &path);
+
     static GLuint createProgram(AAssetManager *assetManager,
                                 const std::string &vertexShaderFile,
                                 const std::string &fragmentShaderFile);

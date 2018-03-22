@@ -18,8 +18,9 @@ add_library( # Sets the name of the library.
 
              # Provides a relative path to your source file(s).
              src/main/cpp/glcore.cpp
-             src/main/cpp/utils/ShaderUtils.cpp
+             src/main/cpp/utils/RenderUtils.cpp
              src/main/cpp/utils/Random.cpp
+             src/main/cpp/utils/ResourceManager.cpp
              src/main/cpp/application/NativeApplication.cpp
              src/main/cpp/application/renderer/Renderer.cpp)
 
