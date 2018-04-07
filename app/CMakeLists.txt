@@ -22,7 +22,8 @@ add_library( # Sets the name of the library.
              src/main/cpp/utils/Random.cpp
              src/main/cpp/utils/ResourceManager.cpp
              src/main/cpp/application/NativeApplication.cpp
-             src/main/cpp/application/renderer/Renderer.cpp)
+             src/main/cpp/application/renderer/Renderer.cpp
+             src/main/cpp/application/renderer/camera/Camera.cpp)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by

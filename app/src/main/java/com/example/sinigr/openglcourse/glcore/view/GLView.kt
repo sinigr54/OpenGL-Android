@@ -12,6 +12,8 @@ class GLView(context: Context) : GLSurfaceView(context) {
         private val TAG = GLView::class.java.simpleName
 
         private const val GL_VERSION = 3
+
+        private const val RENDER_UPDATE_TIME = 17L
     }
 
     private var running: Boolean = false
@@ -19,7 +21,7 @@ class GLView(context: Context) : GLSurfaceView(context) {
     private val gameLoop = Runnable {
         while (running) {
             try {
-                Thread.sleep(100)
+                Thread.sleep(RENDER_UPDATE_TIME)
                 requestRender()
             } catch (e: InterruptedException) {
 

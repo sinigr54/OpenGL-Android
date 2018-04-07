@@ -32,6 +32,7 @@ object NativeInterface {
 
     external fun onDrawFrame();
 
+    /* Called from native code */
     @JvmStatic
     fun loadImage(imageName: String): Bitmap? {
         return try {
@@ -43,6 +44,7 @@ object NativeInterface {
 
     }
 
+    /* Called from native code */
     @JvmStatic
     fun loadTexture(target: Int, bitmap: Bitmap) {
         GLUtils.texImage2D(target, 0, bitmap, 0)
