@@ -74,8 +74,6 @@ public:
         return position;
     }
 
-    const
-
     const glm::vec3 &getFront() const {
         return front;
     }

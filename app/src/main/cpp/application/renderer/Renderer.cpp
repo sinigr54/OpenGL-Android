@@ -71,9 +71,9 @@ GLfloat gVertices[] = {
 float screenWidth = 0.0f;
 float screenHeight = 0.0f;
 
-const Camera camera(glm::vec3(1.5f, 1.0f, 6.0f));
+const Camera camera(glm::vec3(-6.5f, 2.0f, -2.5f));
 
-const glm::vec3 lightPosition(1.2f, 1.0f, 1.0f);
+const glm::vec3 lightPosition(1.0f, 1.0f, 1.0f);
 
 Renderer::Renderer(AAssetManager *assetManager) : assetManager(assetManager) {
 
@@ -147,12 +147,14 @@ void Renderer::onDrawFrame() {
     GLint objectColorLocation = glGetUniformLocation(sceneShaderProgram, "objectColor");
     GLint lightColorLocation = glGetUniformLocation(sceneShaderProgram, "lightColor");
     GLint lightPositionLocation = glGetUniformLocation(sceneShaderProgram, "lightPosition");
+    GLint viewPositionLocation = glGetUniformLocation(sceneShaderProgram, "viewPosition");
 
     glm::mat4 cubeModel;
 
     glUniform3f(lightPositionLocation, lightPosition.x, lightPosition.y, lightPosition.z);
     glUniform3f(objectColorLocation, 1.0f, 0.5f, 0.31f);
     glUniform3f(lightColorLocation, 1.0f, 1.0f, 1.0f);
+    glUniform3f(viewPositionLocation, camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
 
     glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
