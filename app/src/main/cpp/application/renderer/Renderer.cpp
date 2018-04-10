@@ -3,8 +3,8 @@
 //
 
 #include <GLES3/gl3.h>
-#include <utils/RenderUtils.h>
-#include <utils/Random.h>
+#include "utils/RenderUtils.h"
+#include "utils/Random.h"
 #include "Renderer.h"
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
@@ -12,12 +12,11 @@
 #include <ctime>
 #include <vector>
 #include <sstream>
-#include <application/renderer/camera/Camera.h>
+#include "application/renderer/camera/Camera.h"
+#include "shader/Shader.h"
+#include <memory>
 
-const std::string TAG = "Rendered";
-
-GLuint sceneShaderProgram = 0;
-GLuint lightSourceShaderProgram = 0;
+const std::string TAG = "Renderer";
 
 GLuint VBO = 0;
 GLuint cubeVao = 0;
@@ -85,31 +84,23 @@ glm::vec3 cubePositions[] = {
 float screenWidth = 0.0f;
 float screenHeight = 0.0f;
 
-const Camera camera(glm::vec3(0.0f, 0.0f, 10.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 10.0f));
 
-glm::vec3 lightPosition(0.0f, 1.0f, 0.0f);
+glm::vec3 lightPosition(0.0f, 1.0f, 4.0f);
 
 double delta = 0.0;
 
 GLuint cubeTexture;
 GLuint cubeSpecularMap;
 
-Renderer::Renderer(AAssetManager *assetManager) : assetManager(assetManager) {
+Renderer::Renderer(AAssetManager *assetManager) :
+        assetManager(assetManager) {
 
 }
 
 void Renderer::onSurfaceCreated() {
-    sceneShaderProgram = RenderUtils::createProgram(
-            assetManager,
-            "cube_vertex_shader.glsl",
-            "cube_fragment_shader.glsl"
-    );
-
-    lightSourceShaderProgram = RenderUtils::createProgram(
-            assetManager,
-            "lamp_vertex_shader.glsl",
-            "light_fragment_shader.glsl"
-    );
+    cubeShader.init(assetManager, "cube_vertex_shader.glsl", "cube_fragment_shader.glsl");
+    lampShader.init(assetManager, "lamp_vertex_shader.glsl", "light_fragment_shader.glsl");
 
     /*Создаем буфер верши и заполняем его вершинами*/
     glGenBuffers(1, &VBO);
@@ -181,54 +172,38 @@ void Renderer::onDrawFrame() {
     view = camera.getViewMatrix();
     projection = glm::perspective(45.0f, screenWidth / screenHeight, 0.1f, 100.0f);
 
-    glUseProgram(sceneShaderProgram);
-
-    GLint modelLocation = glGetUniformLocation(sceneShaderProgram, "model");
-    GLint viewLocation = glGetUniformLocation(sceneShaderProgram, "view");
-    GLint projectionLocation = glGetUniformLocation(sceneShaderProgram, "projection");
-
-    GLint viewPositionLocation = glGetUniformLocation(sceneShaderProgram, "viewPosition");
-
-    GLint diffuseMaterialLocation = glGetUniformLocation(sceneShaderProgram, "material.diffuse");
-    GLint specularMaterialLocation = glGetUniformLocation(sceneShaderProgram, "material.specular");
-    GLint shininessMaterialLocation = glGetUniformLocation(sceneShaderProgram,
-                                                           "material.shininess");
-
-    GLint ambientLightLocation = glGetUniformLocation(sceneShaderProgram, "light.ambient");
-    GLint diffuseLightLocation = glGetUniformLocation(sceneShaderProgram, "light.diffuse");
-    GLint specularLightLocation = glGetUniformLocation(sceneShaderProgram, "light.specular");
-    GLint lightPositionLocation = glGetUniformLocation(sceneShaderProgram, "light.position");
-    GLint lightDirectionLocation = glGetUniformLocation(sceneShaderProgram, "light.direction");
+    cubeShader.use();
 
     glm::mat4 cubeModel;
 
     /* Параметры источника света */
-    glUniform3f(ambientLightLocation, 0.3f, 0.3f, 0.3f);
-    glUniform3f(diffuseLightLocation, 0.6f, 0.6f, 0.6f);
-    glUniform3f(specularLightLocation, 2.0f, 2.0f, 2.0f);
+    cubeShader.setUniform("light.ambient", glm::vec3(0.3f, 0.3f, 0.3f));
+    cubeShader.setUniform("light.diffuse", glm::vec3(0.6f, 0.6f, 0.6f));
+    cubeShader.setUniform("light.specular", glm::vec3(2.0f, 2.0f, 2.0f));
 
     /* Параметры материала */
-
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, cubeTexture);
 
-    glUniform1i(diffuseMaterialLocation, 0);
+    cubeShader.setUniform("material.diffuse", 0);
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, cubeSpecularMap);
 
-    glUniform1i(specularMaterialLocation, 1);
+    cubeShader.setUniform("material.specular", 1);
+    cubeShader.setUniform("material.shininess", 64.0f);
 
-    glUniform1f(shininessMaterialLocation, 64.0f);
+    cubeShader.setUniform("light.position", lightPosition);
+    cubeShader.setUniform("light.direction", glm::vec3(0.0f, 0.2f, -0.8f));
 
-    glUniform3f(lightPositionLocation, lightPosition.x, lightPosition.y, lightPosition.z);
-    glUniform3f(lightDirectionLocation, 0.0f, 0.2f, -0.8f);
+    cubeShader.setUniform("viewPosition", camera.getPosition());
 
-    glUniform3f(viewPositionLocation, camera.getPosition().x, camera.getPosition().y,
-                camera.getPosition().z);
+    cubeShader.setUniform("view", view);
+    cubeShader.setUniform("projection", projection);
 
-    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
+    cubeShader.setUniform("light.constant", 1.0f);
+    cubeShader.setUniform("light.linear", 0.09f);
+    cubeShader.setUniform("light.quadratic", 0.032f);
 
     glBindVertexArray(cubeVao);
 
@@ -237,27 +212,23 @@ void Renderer::onDrawFrame() {
         model = glm::translate(model, cubePositions[i]);
         float angle = 20.0f * i;
         model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
-        glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+        cubeShader.setUniform("model", model);
 
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
     glBindVertexArray(0);
 
-    /*glUseProgram(lightSourceShaderProgram);
+    lampShader.use();
 
     glm::mat4 lightModel;
-
-    modelLocation = glGetUniformLocation(lightSourceShaderProgram, "model");
-    viewLocation = glGetUniformLocation(lightSourceShaderProgram, "view");
-    projectionLocation = glGetUniformLocation(lightSourceShaderProgram, "projection");
 
     lightModel = glm::translate(lightModel, lightPosition);
     lightModel = glm::scale(lightModel, glm::vec3(0.2f));
 
-    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(lightModel));
+    lampShader.setUniform("view", view);
+    lampShader.setUniform("projection", projection);
+    lampShader.setUniform("model", lightModel);
 
     glBindVertexArray(lightVao);
 
@@ -265,11 +236,11 @@ void Renderer::onDrawFrame() {
 
     glBindVertexArray(0);
 
-    lightPosition.x = static_cast<float>(sin(delta));
-    lightPosition.z = static_cast<float>(cos(delta));
+    camera.getPosition().x = static_cast<float>(sin(delta)) * 10.0f;
+    camera.getPosition().z = static_cast<float>(cos(delta)) * 10.0f;
 
     delta += 0.02;
     if (delta > 10000.0) {
         delta = 0.0;
-    }*/
+    }
 }

@@ -70,6 +70,18 @@ public:
         updateCameraVectors();
     }
 
+    glm::vec3 &getPosition() {
+        return position;
+    }
+
+    glm::vec3 &getFront() {
+        return front;
+    }
+
+    glm::vec3 &getUp() {
+        return up;
+    }
+
     const glm::vec3 &getPosition() const {
         return position;
     }
@@ -83,7 +95,8 @@ public:
     }
 
     glm::mat4 getViewMatrix() const {
-         return glm::lookAt(position, position + front, up);
+//         return glm::lookAt(position, position + front, up);
+         return glm::lookAt(position, glm::vec3(0.0f, 0.0f, 0.0f), up);
     }
 
     void processTouch(CameraMovement direction, GLfloat deltaTime) {
