@@ -69,10 +69,23 @@ GLfloat gVertices[] = {
         -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
 };
 
+glm::vec3 cubePositions[] = {
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(2.0f, 5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3(2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f, 3.0f, -7.5f),
+        glm::vec3(1.3f, -2.0f, -2.5f),
+        glm::vec3(1.5f, 2.0f, -2.5f),
+        glm::vec3(1.5f, 0.2f, -1.5f),
+        glm::vec3(-1.3f, 1.0f, -1.5f)
+};
+
 float screenWidth = 0.0f;
 float screenHeight = 0.0f;
 
-const Camera camera(glm::vec3(0.0f, 2.0f, 4.0f));
+const Camera camera(glm::vec3(0.0f, 0.0f, 10.0f));
 
 glm::vec3 lightPosition(0.0f, 1.0f, 0.0f);
 
@@ -185,6 +198,7 @@ void Renderer::onDrawFrame() {
     GLint diffuseLightLocation = glGetUniformLocation(sceneShaderProgram, "light.diffuse");
     GLint specularLightLocation = glGetUniformLocation(sceneShaderProgram, "light.specular");
     GLint lightPositionLocation = glGetUniformLocation(sceneShaderProgram, "light.position");
+    GLint lightDirectionLocation = glGetUniformLocation(sceneShaderProgram, "light.direction");
 
     glm::mat4 cubeModel;
 
@@ -208,21 +222,29 @@ void Renderer::onDrawFrame() {
     glUniform1f(shininessMaterialLocation, 64.0f);
 
     glUniform3f(lightPositionLocation, lightPosition.x, lightPosition.y, lightPosition.z);
+    glUniform3f(lightDirectionLocation, 0.0f, 0.2f, -0.8f);
 
     glUniform3f(viewPositionLocation, camera.getPosition().x, camera.getPosition().y,
                 camera.getPosition().z);
 
     glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(cubeModel));
 
     glBindVertexArray(cubeVao);
 
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    for (int i = 0; i < 10; i++) {
+        glm::mat4 model;
+        model = glm::translate(model, cubePositions[i]);
+        float angle = 20.0f * i;
+        model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
+        glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
 
     glBindVertexArray(0);
 
-    glUseProgram(lightSourceShaderProgram);
+    /*glUseProgram(lightSourceShaderProgram);
 
     glm::mat4 lightModel;
 
@@ -249,5 +271,5 @@ void Renderer::onDrawFrame() {
     delta += 0.02;
     if (delta > 10000.0) {
         delta = 0.0;
-    }
+    }*/
 }

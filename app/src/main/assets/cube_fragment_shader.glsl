@@ -9,7 +9,9 @@ out vec4 outColor;
 uniform vec3 viewPosition;
 
 struct Light {
-    vec3 position;
+    // vec3 position;
+
+    vec3 direction;
 
     vec3 ambient;
     vec3 diffuse;
@@ -29,7 +31,7 @@ void main() {
     vec3 ambient = light.ambient * vec3(texture(material.diffuse, outTexCoords));
 
     vec3 normal = normalize(outNormal);
-    vec3 lightDirection = normalize(light.position - outFragmentPosition);
+    vec3 lightDirection = normalize(-light.direction);
 
     float diffuseValue = max(dot(normal, lightDirection), 0.0);
     vec3 diffuse = light.diffuse * diffuseValue * vec3(texture(material.diffuse, outTexCoords));

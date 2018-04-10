@@ -83,8 +83,7 @@ public:
     }
 
     glm::mat4 getViewMatrix() const {
-        // return glm::lookAt(position, position + front, up);
-        return glm::lookAt(position, glm::vec3(0.0f, 0.0f, 0.0f), up); // Temp value direction
+         return glm::lookAt(position, position + front, up);
     }
 
     void processTouch(CameraMovement direction, GLfloat deltaTime) {
