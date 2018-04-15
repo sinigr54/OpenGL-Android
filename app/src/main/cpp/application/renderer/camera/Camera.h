@@ -9,22 +9,15 @@
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 
-enum CameraMovement {
-    FORWARD,
-    BACKWARD,
-    LEFT,
-    RIGHT
-};
-
-struct CameraConfiguration {
-    constexpr static GLfloat YAW = -90.0f;
-    constexpr static GLfloat PITCH = 0.0f;
-    constexpr static GLfloat SPEED = 3.0f;
-    constexpr static GLfloat SENSITIVITY = 45.0f;
-    constexpr static GLfloat ZOOM = 45.0f;
-};
-
 class Camera {
+    struct CameraConfiguration {
+        constexpr static GLfloat YAW = -90.0f;
+        constexpr static GLfloat PITCH = 0.0f;
+        constexpr static GLfloat SPEED = 3.0f;
+        constexpr static GLfloat SENSITIVITY = 45.0f;
+        constexpr static GLfloat ZOOM = 45.0f;
+    };
+
     glm::vec3 position;
     glm::vec3 front;
     glm::vec3 up;
@@ -50,6 +43,13 @@ class Camera {
     }
 
 public:
+    enum class CameraMovement {
+        FORWARD,
+        BACKWARD,
+        LEFT,
+        RIGHT
+    };
+
     Camera(const glm::vec3 &position = glm::vec3(0.0f, 0.0f, 3.0f),
            const glm::vec3 &up = glm::vec3(0.0f, 1.0f, 0.0f),
            GLfloat yaw = CameraConfiguration::YAW,
@@ -96,7 +96,7 @@ public:
 
     glm::mat4 getViewMatrix() const {
 //         return glm::lookAt(position, position + front, up);
-         return glm::lookAt(position, glm::vec3(0.0f, 0.0f, 0.0f), up);
+        return glm::lookAt(position, glm::vec3(0.0f, 0.0f, 0.0f), up);
     }
 
     void processTouch(CameraMovement direction, GLfloat deltaTime) {

@@ -1,29 +1,10 @@
 //
-// Created by sinigr on 3/21/18.
+// Created by sinigr on 4/15/18.
 //
 
-#include <GLES3/gl3.h>
-#include "utils/RenderUtils.h"
-#include "utils/Random.h"
-#include "Renderer.h"
-#include <glm.hpp>
-#include <gtc/matrix_transform.hpp>
-#include <gtc/type_ptr.hpp>
-#include <ctime>
-#include <vector>
-#include <sstream>
-#include "application/renderer/camera/Camera.h"
-#include "shader/Shader.h"
-#include <memory>
+#include "SceneRenderer.h"
 
-const std::string TAG = "Renderer";
-
-GLuint VBO = 0;
-GLuint cubeVao = 0;
-GLuint lightVao = 0;
-GLuint IBO = 0;
-
-GLfloat gVertices[] = {
+GLfloat gVertices[]{
         // positions          // normals           // cubeTexture coords
         -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
         0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
@@ -68,7 +49,7 @@ GLfloat gVertices[] = {
         -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
 };
 
-glm::vec3 cubePositions[] = {
+glm::vec3 cubePositions[]{
         glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3(2.0f, 5.0f, -15.0f),
         glm::vec3(-1.5f, -2.2f, -2.5f),
@@ -81,25 +62,16 @@ glm::vec3 cubePositions[] = {
         glm::vec3(-1.3f, 1.0f, -1.5f)
 };
 
-float screenWidth = 0.0f;
-float screenHeight = 0.0f;
-
-Camera camera(glm::vec3(0.0f, 0.0f, 10.0f));
-
-glm::vec3 lightPosition(0.0f, 1.0f, 4.0f);
-
-double delta = 0.0;
-
-GLuint cubeTexture;
-GLuint cubeSpecularMap;
-
-Renderer::Renderer(AAssetManager *assetManager) :
-        assetManager(assetManager) {
+SceneRenderer::SceneRenderer(AAssetManager *assetManager) : BaseRenderer(assetManager) {
 
 }
 
-void Renderer::onSurfaceCreated() {
-    cubeShader.init(assetManager, "cube_vertex_shader.glsl", "cube_fragment_shader.glsl");
+SceneRenderer::~SceneRenderer() {
+
+}
+
+void SceneRenderer::onSurfaceCreated() noexcept {
+    sceneShader.init(assetManager, "cube_vertex_shader.glsl", "cube_fragment_shader.glsl");
     lampShader.init(assetManager, "lamp_vertex_shader.glsl", "light_fragment_shader.glsl");
 
     /*Создаем буфер верши и заполняем его вершинами*/
@@ -155,13 +127,13 @@ void Renderer::onSurfaceCreated() {
     glEnable(GL_DEPTH_TEST);
 }
 
-void Renderer::onSurfaceChanged(int width, int height) {
+void SceneRenderer::onSurfaceChanged(int width, int height) noexcept {
     glViewport(0, 0, width, height);
     screenWidth = static_cast<float>(width);
     screenHeight = static_cast<float>(height);
 }
 
-void Renderer::onDrawFrame() {
+void SceneRenderer::onDrawFrame() noexcept {
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -172,38 +144,38 @@ void Renderer::onDrawFrame() {
     view = camera.getViewMatrix();
     projection = glm::perspective(45.0f, screenWidth / screenHeight, 0.1f, 100.0f);
 
-    cubeShader.use();
+    sceneShader.use();
 
     glm::mat4 cubeModel;
 
     /* Параметры источника света */
-    cubeShader.setUniform("light.ambient", glm::vec3(0.3f, 0.3f, 0.3f));
-    cubeShader.setUniform("light.diffuse", glm::vec3(0.6f, 0.6f, 0.6f));
-    cubeShader.setUniform("light.specular", glm::vec3(2.0f, 2.0f, 2.0f));
+    sceneShader.setUniform("light.ambient", glm::vec3(0.3f, 0.3f, 0.3f));
+    sceneShader.setUniform("light.diffuse", glm::vec3(0.6f, 0.6f, 0.6f));
+    sceneShader.setUniform("light.specular", glm::vec3(2.0f, 2.0f, 2.0f));
 
     /* Параметры материала */
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, cubeTexture);
 
-    cubeShader.setUniform("material.diffuse", 0);
+    sceneShader.setUniform("material.diffuse", 0);
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, cubeSpecularMap);
 
-    cubeShader.setUniform("material.specular", 1);
-    cubeShader.setUniform("material.shininess", 64.0f);
+    sceneShader.setUniform("material.specular", 1);
+    sceneShader.setUniform("material.shininess", 64.0f);
 
-    cubeShader.setUniform("light.position", lightPosition);
-    cubeShader.setUniform("light.direction", glm::vec3(0.0f, 0.2f, -0.8f));
+    sceneShader.setUniform("light.position", lightPosition);
+    sceneShader.setUniform("light.direction", glm::vec3(0.0f, 0.2f, -0.8f));
 
-    cubeShader.setUniform("viewPosition", camera.getPosition());
+    sceneShader.setUniform("viewPosition", camera.getPosition());
 
-    cubeShader.setUniform("view", view);
-    cubeShader.setUniform("projection", projection);
+    sceneShader.setUniform("view", view);
+    sceneShader.setUniform("projection", projection);
 
-    cubeShader.setUniform("light.constant", 1.0f);
-    cubeShader.setUniform("light.linear", 0.09f);
-    cubeShader.setUniform("light.quadratic", 0.032f);
+    sceneShader.setUniform("light.constant", 1.0f);
+    sceneShader.setUniform("light.linear", 0.09f);
+    sceneShader.setUniform("light.quadratic", 0.032f);
 
     glBindVertexArray(cubeVao);
 
@@ -212,7 +184,7 @@ void Renderer::onDrawFrame() {
         model = glm::translate(model, cubePositions[i]);
         float angle = 20.0f * i;
         model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
-        cubeShader.setUniform("model", model);
+        sceneShader.setUniform("model", model);
 
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }

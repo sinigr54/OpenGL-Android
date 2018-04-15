@@ -8,10 +8,10 @@
 #include <android/asset_manager.h>
 #include <memory>
 
-#include "renderer/Renderer.h"
+#include "application/renderer/base/BaseRenderer.h"
 
 class NativeApplication {
-    Renderer renderer;
+    std::unique_ptr<BaseRenderer> pRenderer;
 
 public:
     NativeApplication() = default;

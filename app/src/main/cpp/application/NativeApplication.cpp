@@ -2,10 +2,11 @@
 // Created by sinigr on 3/21/18.
 //
 
+#include <application/renderer/SceneRenderer.h>
 #include "NativeApplication.h"
 
 NativeApplication::NativeApplication(AAssetManager *assetManager)
-        : renderer(assetManager) {
+        : pRenderer(std::make_unique<SceneRenderer>(assetManager)) {
 
 }
 
@@ -22,13 +23,13 @@ void NativeApplication::onResume() {
 }
 
 void NativeApplication::onSurfaceCreated() {
-    renderer.onSurfaceCreated();
+    pRenderer->onSurfaceCreated();
 }
 
 void NativeApplication::onSurfaceChanged(int width, int height) {
-    renderer.onSurfaceChanged(width, height);
+    pRenderer->onSurfaceChanged(width, height);
 }
 
 void NativeApplication::onDrawFrame() {
-    renderer.onDrawFrame();
+    pRenderer->onDrawFrame();
 }

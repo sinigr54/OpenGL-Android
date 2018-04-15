@@ -12,7 +12,7 @@
 #include <android/asset_manager.h>
 #include <utils/RenderUtils.h>
 
-class Shader {
+class ShaderProgram {
     GLuint program;
 
     void checkGlError(const char *operation) {
