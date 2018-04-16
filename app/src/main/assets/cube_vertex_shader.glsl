@@ -13,8 +13,9 @@ out vec3 outNormal;
 out vec2 outTexCoords;
 
 void main() {
-   gl_Position = projection * view * model * vec4(inPosition, 1.0f);
    outNormal = mat3(transpose(inverse(model))) * inNormal;
    outFragmentPosition = vec3(model * vec4(inPosition, 1.0f));
    outTexCoords = inTexCoords;
+
+   gl_Position = projection * view * model * vec4(inPosition, 1.0f);
 }

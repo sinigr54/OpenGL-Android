@@ -3,6 +3,8 @@
 //
 
 #include "SceneRenderer.h"
+#include <string>
+#include <sstream>
 
 GLfloat gVertices[]{
         // positions          // normals           // cubeTexture coords
@@ -50,7 +52,7 @@ GLfloat gVertices[]{
 };
 
 glm::vec3 cubePositions[]{
-        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(-0.8f, 0.0f, -3.0f),
         glm::vec3(2.0f, 5.0f, -15.0f),
         glm::vec3(-1.5f, -2.2f, -2.5f),
         glm::vec3(-3.8f, -2.0f, -12.3f),
@@ -58,7 +60,7 @@ glm::vec3 cubePositions[]{
         glm::vec3(-1.7f, 3.0f, -7.5f),
         glm::vec3(1.3f, -2.0f, -2.5f),
         glm::vec3(1.5f, 2.0f, -2.5f),
-        glm::vec3(1.5f, 0.2f, -1.5f),
+        glm::vec3(0.8f, 0.0f, -3.0f),
         glm::vec3(-1.3f, 1.0f, -1.5f)
 };
 
@@ -70,9 +72,11 @@ SceneRenderer::~SceneRenderer() {
 
 }
 
-void SceneRenderer::onSurfaceCreated() noexcept {
+void SceneRenderer::onSurfaceCreated() {
+    LOGI("%s", "onSurfaceCreated");
+
     sceneShader.init(assetManager, "cube_vertex_shader.glsl", "cube_fragment_shader.glsl");
-    lampShader.init(assetManager, "lamp_vertex_shader.glsl", "light_fragment_shader.glsl");
+    lampShader.init(assetManager, "lamp_vertex_shader.glsl", "lamp_fragment_shader.glsl");
 
     /*Создаем буфер верши и заполняем его вершинами*/
     glGenBuffers(1, &VBO);
@@ -125,16 +129,19 @@ void SceneRenderer::onSurfaceCreated() noexcept {
     glBindVertexArray(0);
 
     glEnable(GL_DEPTH_TEST);
+
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 }
 
-void SceneRenderer::onSurfaceChanged(int width, int height) noexcept {
+void SceneRenderer::onSurfaceChanged(int width, int height) {
+    LOGI("%s", "onSurfaceChanged");
+
     glViewport(0, 0, width, height);
     screenWidth = static_cast<float>(width);
     screenHeight = static_cast<float>(height);
 }
 
-void SceneRenderer::onDrawFrame() noexcept {
-    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+void SceneRenderer::onDrawFrame() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glm::mat4 view;
@@ -148,11 +155,6 @@ void SceneRenderer::onDrawFrame() noexcept {
 
     glm::mat4 cubeModel;
 
-    /* Параметры источника света */
-    sceneShader.setUniform("light.ambient", glm::vec3(0.3f, 0.3f, 0.3f));
-    sceneShader.setUniform("light.diffuse", glm::vec3(0.6f, 0.6f, 0.6f));
-    sceneShader.setUniform("light.specular", glm::vec3(2.0f, 2.0f, 2.0f));
-
     /* Параметры материала */
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, cubeTexture);
@@ -163,19 +165,45 @@ void SceneRenderer::onDrawFrame() noexcept {
     glBindTexture(GL_TEXTURE_2D, cubeSpecularMap);
 
     sceneShader.setUniform("material.specular", 1);
-    sceneShader.setUniform("material.shininess", 64.0f);
 
-    sceneShader.setUniform("light.position", lightPosition);
-    sceneShader.setUniform("light.direction", glm::vec3(0.0f, 0.2f, -0.8f));
+    sceneShader.setUniform("material.shininess", 32.0f);
 
     sceneShader.setUniform("viewPosition", camera.getPosition());
 
     sceneShader.setUniform("view", view);
     sceneShader.setUniform("projection", projection);
 
-    sceneShader.setUniform("light.constant", 1.0f);
-    sceneShader.setUniform("light.linear", 0.09f);
-    sceneShader.setUniform("light.quadratic", 0.032f);
+    /* Параметры источников света */
+
+    sceneShader.setUniform("directionLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
+    sceneShader.setUniform("directionLight.ambient", ambient);
+    sceneShader.setUniform("directionLight.diffuse", diffuse);
+    sceneShader.setUniform("directionLight.specular", specular);
+
+    for (int i = 0; i < pointLightPositions.size(); ++i) {
+        std::string uniformName = "pointLights[" + std::to_string(i) + "]";
+
+        sceneShader.setUniform(uniformName + ".constant", 1.0f);
+        sceneShader.setUniform(uniformName + ".linear", 0.09f);
+        sceneShader.setUniform(uniformName + ".quadratic", 0.032f);
+
+        sceneShader.setUniform(uniformName + ".ambient", ambient);
+        sceneShader.setUniform(uniformName + ".diffuse", diffuse);
+        sceneShader.setUniform(uniformName + ".specular", specular);
+
+        sceneShader.setUniform(".position", pointLightPositions[i]);
+    }
+
+    sceneShader.setUniform("spotLight.position", camera.getPosition());
+    sceneShader.setUniform("spotLight.direction", camera.getFront());
+    sceneShader.setUniform("spotLight.ambient", ambient);
+    sceneShader.setUniform("spotLight.diffuse", diffuse);
+    sceneShader.setUniform("spotLight.specular", specular);
+    sceneShader.setUniform("spotLight.constant", 1.0f);
+    sceneShader.setUniform("spotLight.linear", 0.09f);
+    sceneShader.setUniform("spotLight.quadratic", 0.032f);
+    sceneShader.setUniform("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+    sceneShader.setUniform("spotLight.outerCutOff", glm::cos(glm::radians(17.5f)));
 
     glBindVertexArray(cubeVao);
 
@@ -183,7 +211,7 @@ void SceneRenderer::onDrawFrame() noexcept {
         glm::mat4 model;
         model = glm::translate(model, cubePositions[i]);
         float angle = 20.0f * i;
-        model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
+        model = glm::rotate(model, angle, glm::vec3(1.0f, 0.0f, 0.0f));
         sceneShader.setUniform("model", model);
 
         glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -193,18 +221,21 @@ void SceneRenderer::onDrawFrame() noexcept {
 
     lampShader.use();
 
-    glm::mat4 lightModel;
-
-    lightModel = glm::translate(lightModel, lightPosition);
-    lightModel = glm::scale(lightModel, glm::vec3(0.2f));
-
     lampShader.setUniform("view", view);
     lampShader.setUniform("projection", projection);
-    lampShader.setUniform("model", lightModel);
 
     glBindVertexArray(lightVao);
 
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    for (auto &position : pointLightPositions) {
+        glm::mat4 lightModel;
+
+        lightModel = glm::translate(lightModel, position);
+        lightModel = glm::scale(lightModel, glm::vec3(0.2f));
+
+        lampShader.setUniform("model", lightModel);
+
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
 
     glBindVertexArray(0);
 

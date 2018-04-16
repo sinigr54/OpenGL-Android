@@ -96,7 +96,7 @@ public:
 
     glm::mat4 getViewMatrix() const {
 //         return glm::lookAt(position, position + front, up);
-        return glm::lookAt(position, glm::vec3(0.0f, 0.0f, 0.0f), up);
+         return glm::lookAt(position, glm::vec3(0.0f, 0.0f, 0.0f), up);
     }
 
     void processTouch(CameraMovement direction, GLfloat deltaTime) {
