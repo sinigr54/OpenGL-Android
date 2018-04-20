@@ -18,7 +18,8 @@ object NativeInterface {
 
     var assetManager: AssetManager? = null
 
-    external fun createNativeApplication(assetManager: AssetManager)
+    external fun createNativeApplication(assetManager: AssetManager,
+                                         pathToInternalDir: String)
 
     external fun destroyNativeApplication()
 

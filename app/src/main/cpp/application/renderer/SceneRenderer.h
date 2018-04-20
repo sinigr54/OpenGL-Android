@@ -9,6 +9,7 @@
 #include <application/renderer/base/BaseRenderer.h>
 #include <application/renderer/camera/Camera.h>
 #include <vector>
+#include <assimp/Importer.hpp>
 
 class SceneRenderer : public BaseRenderer {
     GLuint VBO{0};
@@ -40,11 +41,13 @@ class SceneRenderer : public BaseRenderer {
             glm::vec3(0.0f, 0.0f, -3.0f)
     };
 
+    Assimp::Importer importer{};
+
     ShaderProgram lampShader;
     ShaderProgram sceneShader;
 
 public:
-    SceneRenderer(AAssetManager *assetManager);
+    SceneRenderer(AAssetManager *assetManager, Assimp::IOSystem *);
 
     ~SceneRenderer() override;
 

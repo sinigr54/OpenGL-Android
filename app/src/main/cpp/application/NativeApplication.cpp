@@ -5,8 +5,9 @@
 #include <application/renderer/SceneRenderer.h>
 #include "NativeApplication.h"
 
-NativeApplication::NativeApplication(AAssetManager *assetManager)
-        : pRenderer(std::make_unique<SceneRenderer>(assetManager)) {
+NativeApplication::NativeApplication(AAssetManager *assetManager,
+                                     Assimp::IOSystem *ioSystem) :
+        pRenderer(std::make_unique<SceneRenderer>(assetManager, ioSystem)) {
 
 }
 
