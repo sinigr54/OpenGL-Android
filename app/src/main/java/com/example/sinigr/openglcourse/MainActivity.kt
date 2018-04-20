@@ -12,8 +12,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val internalDirectory = filesDir.absolutePath
+
         NativeInterface.assetManager = assets
-        NativeInterface.createNativeApplication(assets)
+        NativeInterface.createNativeApplication(assets, internalDirectory)
 
         glView = GLView(this)
         setContentView(glView)

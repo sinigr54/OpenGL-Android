@@ -1,8 +1,9 @@
 #include <jni.h>
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
-#include <memory>
-#include <application/NativeApplication.h>
+#include <string>
+#include "application/NativeApplication.h"
+#include <AndroidJNIIOSystem.h>
 
 #define JNI_METHOD(return_type, method_name) \
   extern "C" JNIEXPORT return_type JNICALL              \
@@ -10,8 +11,23 @@
 
 NativeApplication *nativeApplication;
 
-JNI_METHOD(void, createNativeApplication)(JNIEnv *env, jobject, jobject assetManager) {
-    nativeApplication = new NativeApplication(AAssetManager_fromJava(env, assetManager));
+JNI_METHOD(void, createNativeApplication)(JNIEnv *env,
+                                          jobject,
+                                          jobject assetManager,
+                                          jstring pathToInternalDir) {
+
+    const char *cPathToInternalDir = env->GetStringUTFChars(pathToInternalDir, nullptr);
+    auto internalPath = std::string(cPathToInternalDir);
+
+    AAssetManager *aAssetManager = AAssetManager_fromJava(env, assetManager);
+    Assimp::IOSystem *ioSystem = new Assimp::AndroidJNIIOSystem(aAssetManager, internalPath);
+
+    nativeApplication = new NativeApplication(
+            aAssetManager,
+            ioSystem
+    );
+
+    env->ReleaseStringUTFChars(pathToInternalDir, cPathToInternalDir);
 }
 
 JNI_METHOD(void, destroyNativeApplication)(JNIEnv *env, jobject) {
@@ -37,7 +53,6 @@ JNI_METHOD(void, onSurfaceChanged)(JNIEnv *env, jobject, jint width, jint height
 JNI_METHOD(void, onDrawFrame)(JNIEnv *env, jobject) {
     nativeApplication->onDrawFrame();
 }
-
 
 
 

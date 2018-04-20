@@ -66,6 +66,9 @@ fastlane/readme.md
 # Prerequisites
 *.d
 
+# Distribution files
+distribution/
+
 # Compiled Object files
 *.slo
 *.lo

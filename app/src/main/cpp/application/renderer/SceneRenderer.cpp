@@ -5,6 +5,8 @@
 #include "SceneRenderer.h"
 #include <string>
 #include <sstream>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 GLfloat gVertices[]{
         // positions          // normals           // cubeTexture coords
@@ -64,8 +66,10 @@ glm::vec3 cubePositions[]{
         glm::vec3(-1.3f, 1.0f, -1.5f)
 };
 
-SceneRenderer::SceneRenderer(AAssetManager *assetManager) : BaseRenderer(assetManager) {
+SceneRenderer::SceneRenderer(AAssetManager *assetManager,
+                             Assimp::IOSystem *ioSystem) : BaseRenderer(assetManager) {
 
+    importer.SetIOHandler(ioSystem);
 }
 
 SceneRenderer::~SceneRenderer() {
@@ -74,6 +78,14 @@ SceneRenderer::~SceneRenderer() {
 
 void SceneRenderer::onSurfaceCreated() {
     LOGI("%s", "onSurfaceCreated");
+
+    auto modelPath = "model/nanosuit.blend";
+    const aiScene *scene =
+            importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_FlipUVs);
+
+    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+        LOGI("%s::%s", "Error::Assimp", importer.GetErrorString());
+    }
 
     sceneShader.init(assetManager, "cube_vertex_shader.glsl", "cube_fragment_shader.glsl");
     lampShader.init(assetManager, "lamp_vertex_shader.glsl", "lamp_fragment_shader.glsl");

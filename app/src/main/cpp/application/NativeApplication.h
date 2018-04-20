@@ -7,6 +7,7 @@
 
 #include <android/asset_manager.h>
 #include <memory>
+#include <assimp/IOSystem.hpp>
 
 #include "application/renderer/base/BaseRenderer.h"
 
@@ -16,7 +17,7 @@ class NativeApplication {
 public:
     NativeApplication() = default;
 
-    NativeApplication(AAssetManager *assetManager);
+    NativeApplication(AAssetManager *assetManager, Assimp::IOSystem *ioSystem);
 
     ~NativeApplication();
 
