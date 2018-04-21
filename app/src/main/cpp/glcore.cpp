@@ -16,6 +16,8 @@ JNI_METHOD(void, createNativeApplication)(JNIEnv *env,
                                           jobject assetManager,
                                           jstring pathToInternalDir) {
 
+    LOGI("%s", "createNativeApplication");
+
     const char *cPathToInternalDir = env->GetStringUTFChars(pathToInternalDir, nullptr);
     auto internalPath = std::string(cPathToInternalDir);
 

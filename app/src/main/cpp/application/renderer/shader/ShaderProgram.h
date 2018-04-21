@@ -143,23 +143,27 @@ public:
         program = createProgram(vertexSource, fragmentSource);
     }
 
-    void use() {
+    void use() const {
         glUseProgram(program);
     }
 
-    void setUniform(const std::string &parameter, GLfloat value) {
+    void setUniform(const std::string &parameter, GLfloat value) const {
         glUniform1f(glGetUniformLocation(program, parameter.c_str()), value);
     }
 
-    void setUniform(const std::string &parameter, GLint value) {
+    void setUniform(const std::string &parameter, GLuint value) const {
         glUniform1i(glGetUniformLocation(program, parameter.c_str()), value);
     }
 
-    void setUniform(const std::string &parameter, const glm::vec3 &value) {
+    void setUniform(const std::string &parameter, GLint value) const {
+        glUniform1i(glGetUniformLocation(program, parameter.c_str()), value);
+    }
+
+    void setUniform(const std::string &parameter, const glm::vec3 &value) const {
         glUniform3f(glGetUniformLocation(program, parameter.c_str()), value.x, value.y, value.z);
     }
 
-    void setUniform(const std::string &parameter, const glm::mat4 &value) {
+    void setUniform(const std::string &parameter, const glm::mat4 &value) const {
         glUniformMatrix4fv(glGetUniformLocation(program, parameter.c_str()),
                            1, GL_FALSE, glm::value_ptr(value));
     }

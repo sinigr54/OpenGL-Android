@@ -23,6 +23,8 @@ add_library( # Sets the name of the library.
              src/main/cpp/utils/RenderUtils.cpp
              src/main/cpp/utils/Random.cpp
              src/main/cpp/utils/AndroidIOSystem.cpp
+             src/main/cpp/application/renderer/model/Mesh.cpp
+             src/main/cpp/application/renderer/model/Model.cpp
              src/main/cpp/application/NativeApplication.cpp
              src/main/cpp/application/renderer/base/BaseRenderer.cpp
              src/main/cpp/application/renderer/SceneRenderer.cpp
