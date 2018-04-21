@@ -37,8 +37,12 @@ void main() {
     float specularValue = pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess);
     // комбинируем результаты
     vec3 ambient  = directionLight.ambient  * vec3(texture(material.texture_diffuse1, outTexCoords));
-    vec3 diffuse  = directionLight.diffuse  * diffuseValue * vec3(texture(material.texture_diffuse1, outTexCoords));
-    vec3 specular = directionLight.specular * specularValue * vec3(texture(material.texture_specular1, outTexCoords));
+
+    vec3 diffuse  = directionLight.diffuse  *
+                    diffuseValue * vec3(texture(material.texture_diffuse1, outTexCoords));
+
+    vec3 specular = directionLight.specular *
+                    specularValue * vec3(texture(material.texture_specular1, outTexCoords));
 
     vec3 directionLightValue = ambient + diffuse + specular;
 

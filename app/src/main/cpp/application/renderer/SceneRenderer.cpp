@@ -58,9 +58,9 @@ void SceneRenderer::onDrawFrame() {
 
     projection = glm::perspective(45.0f, screenWidth / screenHeight, 0.1f, 100.0f);
 
-    glm::vec3 ambient{glm::vec3(0.4f, 0.4f, 0.4f)};
+    glm::vec3 ambient{glm::vec3(0.2f, 0.2f, 0.2f)};
     glm::vec3 diffuse{glm::vec3(0.8f, 0.8f, 0.8f)};
-    glm::vec3 specular{glm::vec3(2.0f, 2.0f, 2.0f)};
+    glm::vec3 specular{glm::vec3(1.0f, 1.0f, 1.0f)};
 
     sceneShader.setUniform("viewPosition", camera.getPosition());
 
