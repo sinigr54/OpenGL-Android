@@ -9,7 +9,3 @@ BaseRenderer::BaseRenderer(AAssetManager *assetManager) :
         assetManager(assetManager) {
 
 }
-
-BaseRenderer::~BaseRenderer() {
-
-}

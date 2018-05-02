@@ -15,7 +15,7 @@ protected:
 public:
     BaseRenderer(AAssetManager *assetManager);
 
-    virtual ~BaseRenderer();
+    virtual ~BaseRenderer() = default;
 
     virtual void onSurfaceCreated() = 0;
 
