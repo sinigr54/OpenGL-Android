@@ -39,7 +39,7 @@ android {
     sourceSets {
         main {
             // Package the shared JNI library into apk
-            jniLibs.srcDirs = ['../distribution/assimp/lib']
+            jniLibs.srcDirs = ['../distribution/assimp/lib', '../distribution/opencv/lib']
         }
     }
 }

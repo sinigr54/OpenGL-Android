@@ -58,6 +58,10 @@ void Mesh::draw(ShaderProgram shaderProgram) const noexcept {
     glBindVertexArray(0);
 }
 
+bool Texture::operator==(const std::string &rhs) {
+    return path == rhs;
+}
+
 void Mesh::initMesh() noexcept {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -88,8 +92,4 @@ void Mesh::initMesh() noexcept {
                           (GLvoid *) offsetof(Vertex, textureCoords));
 
     glBindVertexArray(0);
-}
-
-bool Texture::operator==(const std::string &rhs) {
-    return path == rhs;
 }

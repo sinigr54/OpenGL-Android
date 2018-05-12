@@ -36,7 +36,11 @@ set_target_properties(android_assimp PROPERTIES IMPORTED_LOCATION
 
 add_library(assimp SHARED IMPORTED)
 set_target_properties(assimp PROPERTIES IMPORTED_LOCATION
-    ${DISTRIBUTION_DIR}/assimp/lib/${ANDROID_ABI}/libassimp.so)
+   ${DISTRIBUTION_DIR}/assimp/lib/${ANDROID_ABI}/libassimp.so)
+
+add_library(opencv SHARED IMPORTED)
+set_target_properties(opencv PROPERTIES IMPORTED_LOCATION
+   ${DISTRIBUTION_DIR}/opencv/lib/${ANDROID_ABI}/libopencv_java3.so)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
@@ -58,6 +62,7 @@ find_library( # Sets the name of the path variable.
 target_include_directories(glcore PRIVATE
            src/main/cpp
            ${DISTRIBUTION_DIR}/assimp/include
+           ${DISTRIBUTION_DIR}/opencv/include
            ${ANDROID_NDK}/sources/third_party/vulkan/src/libs/glm)
 
 target_link_libraries( # Specifies the target library.
@@ -67,6 +72,7 @@ target_link_libraries( # Specifies the target library.
                        android
                        assimp
                        android_assimp
+                       opencv
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib} )

@@ -3,18 +3,20 @@
 //
 
 #include "SceneRenderer.h"
+#include "application/renderer/model/Model.h"
+
 #include <string>
 #include <sstream>
 #include <algorithm>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include <application/renderer/model/Model.h>
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgcodecs.hpp>
 
 SceneRenderer::SceneRenderer(AAssetManager *assetManager,
                              Assimp::IOSystem *ioSystem) :
         BaseRenderer(assetManager),
         ioSystem(ioSystem) {
-
 }
 
 SceneRenderer::~SceneRenderer() {
@@ -25,7 +27,7 @@ void SceneRenderer::onSurfaceCreated() {
     LOGI("%s", "onSurfaceCreated");
 
     models.clear();
-    models.push_back(Model{"model/nanosuit.obj", ioSystem.get()});
+    models.emplace_back(Model{"model/nanosuit.obj", ioSystem.get()});
 
     sceneShader.init(assetManager, "model_vertex_shader.glsl", "model_fragment_shader.glsl");
 
@@ -58,13 +60,13 @@ void SceneRenderer::onDrawFrame() {
 
     projection = glm::perspective(45.0f, screenWidth / screenHeight, 0.1f, 100.0f);
 
-    glm::vec3 ambient{glm::vec3{0.2f, 0.2f, 0.2f}};
-    glm::vec3 diffuse{glm::vec3{0.8f, 0.8f, 0.8f}};
+    glm::vec3 ambient{glm::vec3{0.4f, 0.4f, 0.4f}};
+    glm::vec3 diffuse{glm::vec3{1.0f, 1.0f, 1.0f}};
     glm::vec3 specular{glm::vec3{1.0f, 1.0f, 1.0f}};
 
     sceneShader.setUniform("viewPosition", camera.getPosition());
 
-    sceneShader.setUniform("directionLight.direction", glm::vec3(0.0f, -1.0f, -1.0f));
+    sceneShader.setUniform("directionLight.direction", glm::vec3(0.0f, -0.8f, -1.0f));
     sceneShader.setUniform("directionLight.ambient", ambient);
     sceneShader.setUniform("directionLight.diffuse", diffuse);
     sceneShader.setUniform("directionLight.specular", specular);

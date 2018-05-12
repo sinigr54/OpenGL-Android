@@ -7,6 +7,10 @@ import com.example.sinigr.openglcourse.glcore.view.GLView
 
 class MainActivity : AppCompatActivity() {
 
+    companion object {
+        private const val TAG = "MainActivity"
+    }
+
     private lateinit var glView: GLView
 
     override fun onCreate(savedInstanceState: Bundle?) {
