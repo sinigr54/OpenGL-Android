@@ -13,7 +13,7 @@ class NativeRenderer(val nativeApplication: Long, private val activity: Activity
     : GLSurfaceView.Renderer, DisplayManager.DisplayListener {
 
     companion object {
-        private val TAG = "NativeRenderer"
+        private const val TAG = "NativeRenderer"
     }
 
     private var isViewportChanged = false

@@ -9,8 +9,6 @@
   extern "C" JNIEXPORT return_type JNICALL              \
       Java_com_example_sinigr_openglcourse_application_NativeInterface_##method_name
 
-NativeApplication *nativeApplication;
-
 inline jlong applicationPointer(NativeApplication *nativeApp) {
     return reinterpret_cast<intptr_t>(nativeApp);
 }
@@ -32,7 +30,7 @@ JNI_METHOD(jlong, createNativeApplication)(JNIEnv *env,
     AAssetManager *aAssetManager = AAssetManager_fromJava(env, assetManager);
     Assimp::IOSystem *ioSystem = new Assimp::AndroidJNIIOSystem(aAssetManager, internalPath);
 
-    nativeApplication = new NativeApplication(
+    NativeApplication *nativeApplication = new NativeApplication(
             aAssetManager,
             ioSystem
     );
@@ -43,35 +41,29 @@ JNI_METHOD(jlong, createNativeApplication)(JNIEnv *env,
 }
 
 JNI_METHOD(void, destroyNativeApplication)(JNIEnv *env, jobject, jlong nativeApp) {
-//    delete native(nativeApp);
-    delete nativeApplication;
+    delete native(nativeApp);
 }
 
 JNI_METHOD(void, onPause)(JNIEnv *env, jobject, jlong nativeApp) {
-//    native(nativeApp)->onPause();
-    nativeApplication->onPause();
+    native(nativeApp)->onPause();
 }
 
 JNI_METHOD(void, onResume)(JNIEnv *env, jobject,
                            jlong nativeApp, jobject context, jobject activity) {
-//    native(nativeApp)->onResume(env, context, activity);
-    nativeApplication->onResume(env, context, activity);
+    native(nativeApp)->onResume(env, context, activity);
 }
 
 JNI_METHOD(void, onSurfaceCreated)(JNIEnv *env, jobject, jlong nativeApp) {
-//    native(nativeApp)->onSurfaceCreated();
-    nativeApplication->onSurfaceCreated();
+    native(nativeApp)->onSurfaceCreated();
 }
 
 JNI_METHOD(void, onDisplayGeometryChanged)(JNIEnv *env, jobject,
-                                   int displayRotation, jlong nativeApp, jint width, jint height) {
-//    native(nativeApp)->onDisplayGeometryChanged(displayRotation, width, height);
-    nativeApplication->onDisplayGeometryChanged(displayRotation, width, height);
+                                           jlong nativeApp, int displayRotation, jint width, jint height) {
+    native(nativeApp)->onDisplayGeometryChanged(displayRotation, width, height);
 }
 
 JNI_METHOD(void, onDrawFrame)(JNIEnv *env, jobject, jlong nativeApp) {
-//    native(nativeApp)->onDrawFrame();
-    nativeApplication->onDrawFrame();
+    native(nativeApp)->onDrawFrame();
 }
 
 
