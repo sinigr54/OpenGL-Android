@@ -32,7 +32,7 @@ public:
 
     void onSurfaceCreated() override;
 
-    void onSurfaceChanged(int width, int height) override;
+    void onSurfaceChanged(int displayRotation, int width, int height) override;
 
     void onDrawFrame() override;
 };

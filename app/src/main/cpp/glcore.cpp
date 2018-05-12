@@ -11,10 +11,18 @@
 
 NativeApplication *nativeApplication;
 
-JNI_METHOD(void, createNativeApplication)(JNIEnv *env,
-                                          jobject,
-                                          jobject assetManager,
-                                          jstring pathToInternalDir) {
+inline jlong applicationPointer(NativeApplication *nativeApp) {
+    return reinterpret_cast<intptr_t>(nativeApp);
+}
+
+inline NativeApplication *native(jlong nativeApp) {
+    return reinterpret_cast<NativeApplication *>(nativeApp);
+}
+
+JNI_METHOD(jlong, createNativeApplication)(JNIEnv *env,
+                                           jobject,
+                                           jobject assetManager,
+                                           jstring pathToInternalDir) {
 
     LOGI("%s", "createNativeApplication");
 
@@ -30,29 +38,39 @@ JNI_METHOD(void, createNativeApplication)(JNIEnv *env,
     );
 
     env->ReleaseStringUTFChars(pathToInternalDir, cPathToInternalDir);
+
+    return applicationPointer(nativeApplication);
 }
 
-JNI_METHOD(void, destroyNativeApplication)(JNIEnv *env, jobject) {
+JNI_METHOD(void, destroyNativeApplication)(JNIEnv *env, jobject, jlong nativeApp) {
+//    delete native(nativeApp);
     delete nativeApplication;
 }
 
-JNI_METHOD(void, onPause)(JNIEnv *env, jobject) {
+JNI_METHOD(void, onPause)(JNIEnv *env, jobject, jlong nativeApp) {
+//    native(nativeApp)->onPause();
     nativeApplication->onPause();
 }
 
-JNI_METHOD(void, onResume)(JNIEnv *env, jobject, jobject context, jobject activity) {
-    nativeApplication->onResume();
+JNI_METHOD(void, onResume)(JNIEnv *env, jobject,
+                           jlong nativeApp, jobject context, jobject activity) {
+//    native(nativeApp)->onResume(env, context, activity);
+    nativeApplication->onResume(env, context, activity);
 }
 
-JNI_METHOD(void, onSurfaceCreated)(JNIEnv *env, jobject) {
+JNI_METHOD(void, onSurfaceCreated)(JNIEnv *env, jobject, jlong nativeApp) {
+//    native(nativeApp)->onSurfaceCreated();
     nativeApplication->onSurfaceCreated();
 }
 
-JNI_METHOD(void, onSurfaceChanged)(JNIEnv *env, jobject, jint width, jint height) {
-    nativeApplication->onSurfaceChanged(width, height);
+JNI_METHOD(void, onDisplayGeometryChanged)(JNIEnv *env, jobject,
+                                   int displayRotation, jlong nativeApp, jint width, jint height) {
+//    native(nativeApp)->onDisplayGeometryChanged(displayRotation, width, height);
+    nativeApplication->onDisplayGeometryChanged(displayRotation, width, height);
 }
 
-JNI_METHOD(void, onDrawFrame)(JNIEnv *env, jobject) {
+JNI_METHOD(void, onDrawFrame)(JNIEnv *env, jobject, jlong nativeApp) {
+//    native(nativeApp)->onDrawFrame();
     nativeApplication->onDrawFrame();
 }
 

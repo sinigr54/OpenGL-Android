@@ -35,7 +35,7 @@ void SceneRenderer::onSurfaceCreated() {
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 }
 
-void SceneRenderer::onSurfaceChanged(int width, int height) {
+void SceneRenderer::onSurfaceChanged(int displayRotation, int width, int height) {
     LOGI("%s", "onSurfaceChanged");
 
     glViewport(0, 0, width, height);

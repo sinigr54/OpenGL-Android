@@ -19,19 +19,19 @@ object NativeInterface {
     var assetManager: AssetManager? = null
 
     external fun createNativeApplication(assetManager: AssetManager,
-                                         pathToInternalDir: String)
+                                         pathToInternalDir: String): Long
 
-    external fun destroyNativeApplication()
+    external fun destroyNativeApplication(nativeApplication: Long)
 
-    external fun onPause()
+    external fun onPause(nativeApplication: Long)
 
-    external fun onResume(context: Context, activity: Activity)
+    external fun onResume(nativeApplication: Long, context: Context, activity: Activity)
 
-    external fun onSurfaceCreated();
+    external fun onSurfaceCreated(nativeApplication: Long);
 
-    external fun onSurfaceChanged(width: Int, height: Int);
+    external fun onDisplayGeometryChanged(nativeApplication: Long, displayRotation: Int, width: Int, height: Int);
 
-    external fun onDrawFrame();
+    external fun onDrawFrame(nativeApplication: Long);
 
     /* Called from native code */
     @JvmStatic

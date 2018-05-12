@@ -12,7 +12,7 @@
 #include "application/renderer/base/BaseRenderer.h"
 
 class NativeApplication {
-    std::unique_ptr<BaseRenderer> pRenderer;
+    BaseRenderer *pRenderer;
 
 public:
     NativeApplication() = default;
@@ -23,11 +23,11 @@ public:
 
     void onPause();
 
-    void onResume();
+    void onResume(void *env, void *context, void *activity);
 
     void onSurfaceCreated();
 
-    void onSurfaceChanged(int width, int height);
+    void onDisplayGeometryChanged(int displayRotation, int width, int height);
 
     void onDrawFrame();
 };

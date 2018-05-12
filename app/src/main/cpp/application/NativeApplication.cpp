@@ -7,19 +7,21 @@
 
 NativeApplication::NativeApplication(AAssetManager *assetManager,
                                      Assimp::IOSystem *ioSystem) :
-        pRenderer(std::make_unique<SceneRenderer>(assetManager, ioSystem)) {
+        pRenderer(new SceneRenderer(assetManager, ioSystem)) {
     LOGI("%s", "NativeApplication");
 }
 
 NativeApplication::~NativeApplication() {
     LOGI("%s", "~NativeApplication");
+
+    delete pRenderer;
 }
 
 void NativeApplication::onPause() {
     /* Nothing */
 }
 
-void NativeApplication::onResume() {
+void NativeApplication::onResume(void *env, void *context, void *activity) {
     /* Nothing */
 }
 
@@ -27,8 +29,8 @@ void NativeApplication::onSurfaceCreated() {
     pRenderer->onSurfaceCreated();
 }
 
-void NativeApplication::onSurfaceChanged(int width, int height) {
-    pRenderer->onSurfaceChanged(width, height);
+void NativeApplication::onDisplayGeometryChanged(int displayRotation, int width, int height) {
+    pRenderer->onSurfaceChanged(displayRotation, width, height);
 }
 
 void NativeApplication::onDrawFrame() {

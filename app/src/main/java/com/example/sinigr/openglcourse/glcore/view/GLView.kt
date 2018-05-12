@@ -3,11 +3,15 @@ package com.example.sinigr.openglcourse.glcore.view
 import android.annotation.SuppressLint
 import android.content.Context
 import android.opengl.GLSurfaceView
+import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import com.example.sinigr.openglcourse.glcore.renderer.NativeRenderer
 
-class GLView(context: Context) : GLSurfaceView(context) {
+@SuppressLint("ViewConstructor")
+class GLView(context: Context,
+             val renderer: GLSurfaceView.Renderer) : GLSurfaceView(context) {
+
     companion object {
         private val TAG = GLView::class.java.simpleName
 
@@ -17,7 +21,6 @@ class GLView(context: Context) : GLSurfaceView(context) {
     }
 
     private var running: Boolean = false
-    private val renderer = NativeRenderer()
     private val gameLoop = Runnable {
         while (running) {
             try {
