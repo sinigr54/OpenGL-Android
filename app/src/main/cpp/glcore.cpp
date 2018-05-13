@@ -9,6 +9,9 @@
   extern "C" JNIEXPORT return_type JNICALL              \
       Java_com_example_sinigr_openglcourse_application_NativeInterface_##method_name
 
+/*
+ * Representation of native application in SDK
+ * */
 inline jlong applicationPointer(NativeApplication *nativeApp) {
     return reinterpret_cast<intptr_t>(nativeApp);
 }

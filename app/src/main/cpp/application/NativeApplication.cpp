@@ -7,14 +7,12 @@
 
 NativeApplication::NativeApplication(AAssetManager *assetManager,
                                      Assimp::IOSystem *ioSystem) :
-        pRenderer(new SceneRenderer(assetManager, ioSystem)) {
+        pRenderer(std::make_unique<SceneRenderer>(assetManager, ioSystem)) {
     LOGI("%s", "NativeApplication");
 }
 
 NativeApplication::~NativeApplication() {
     LOGI("%s", "~NativeApplication");
-
-    delete pRenderer;
 }
 
 void NativeApplication::onPause() {

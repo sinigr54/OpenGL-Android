@@ -9,11 +9,10 @@ import android.view.MotionEvent
 import com.example.sinigr.openglcourse.glcore.renderer.NativeRenderer
 
 @SuppressLint("ViewConstructor")
-class GLView(context: Context,
-             val renderer: GLSurfaceView.Renderer) : GLSurfaceView(context) {
+class GLView(context: Context, renderer: Renderer) : GLSurfaceView(context) {
 
     companion object {
-        private val TAG = GLView::class.java.simpleName
+        private const val TAG = "GLView"
 
         private const val GL_VERSION = 3
 
@@ -53,14 +52,28 @@ class GLView(context: Context,
         return true
     }
 
-    fun start() {
+    override fun onPause() {
+        Log.w(TAG, "onPause")
+
+        super.onPause()
+        stop()
+    }
+
+    override fun onResume() {
+        Log.w(TAG, "onResume")
+
+        super.onResume()
+        start()
+    }
+
+    private fun start() {
         running = true
 
         gameThread = Thread(gameLoop)
         gameThread.start()
     }
 
-    fun stop() {
+    private fun stop() {
         running = false
 
         gameThread.interrupt()

@@ -9,8 +9,10 @@ import com.example.sinigr.openglcourse.application.NativeInterface
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
-class NativeRenderer(val nativeApplication: Long, private val activity: Activity?)
-    : GLSurfaceView.Renderer, DisplayManager.DisplayListener {
+class NativeRenderer(private val activity: Activity) :
+        GLSurfaceView.Renderer,
+        DisplayManager.DisplayListener,
+        LifecycleListener {
 
     companion object {
         private const val TAG = "NativeRenderer"
@@ -20,13 +22,28 @@ class NativeRenderer(val nativeApplication: Long, private val activity: Activity
     private var viewportWidth: Int = 0
     private var viewportHeight: Int = 0
 
+    private var nativeApplication: Long = 0L
+
     init {
         /*
             Listen to display changed events to detect 180° rotation, which does not cause a config
             change or view resize.
         */
-        activity?.getSystemService(DisplayManager::class.java)
+        activity.getSystemService(DisplayManager::class.java)
                 ?.registerDisplayListener(this, null)
+
+        NativeInterface.assetManager = activity.assets
+
+        nativeApplication = NativeInterface
+                .createNativeApplication(activity.assets, activity.filesDir.absolutePath)
+    }
+
+    override fun onPause() {
+        NativeInterface.onPause(nativeApplication)
+    }
+
+    override fun onResume() {
+        NativeInterface.onResume(nativeApplication, activity.applicationContext, activity)
     }
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
@@ -52,7 +69,7 @@ class NativeRenderer(val nativeApplication: Long, private val activity: Activity
             if (isViewportChanged) {
                 isViewportChanged = false
 
-                val displayRotation: Int = activity?.windowManager?.defaultDisplay?.rotation ?: 0
+                val displayRotation: Int = activity.windowManager?.defaultDisplay?.rotation ?: 0
                 NativeInterface.onDisplayGeometryChanged(nativeApplication, displayRotation, viewportWidth, viewportHeight)
             }
 

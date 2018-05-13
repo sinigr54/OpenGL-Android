@@ -12,7 +12,7 @@
 #include "application/renderer/base/BaseRenderer.h"
 
 class NativeApplication {
-    BaseRenderer *pRenderer;
+    std::unique_ptr<BaseRenderer> pRenderer;
 
 public:
     NativeApplication() = default;

@@ -19,30 +19,23 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val internalDirectory = filesDir.absolutePath
-
-        NativeInterface.assetManager = assets
-
-        val nativeApplication = NativeInterface.createNativeApplication(assets, internalDirectory)
-        renderer = NativeRenderer(nativeApplication, this)
-
+        renderer = NativeRenderer(this)
         glView = GLView(this, renderer)
+
         setContentView(glView)
     }
 
     override fun onPause() {
         super.onPause()
 
-        NativeInterface.onPause(renderer.nativeApplication)
+        renderer.onPause()
         glView.onPause()
-        glView.stop()
     }
 
     override fun onResume() {
         super.onResume()
 
-        NativeInterface.onResume(renderer.nativeApplication, applicationContext, this)
+        renderer.onResume()
         glView.onResume()
-        glView.start()
     }
 }
