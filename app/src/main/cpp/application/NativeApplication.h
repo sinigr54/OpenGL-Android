@@ -15,7 +15,8 @@ class NativeApplication {
     std::unique_ptr<BaseRenderer> pRenderer;
 
 public:
-    NativeApplication() = default;
+
+    NativeApplication() = delete;
 
     NativeApplication(AAssetManager *assetManager, Assimp::IOSystem *ioSystem);
 

@@ -27,7 +27,8 @@ void NativeApplication::onSurfaceCreated() {
     pRenderer->onSurfaceCreated();
 }
 
-void NativeApplication::onDisplayGeometryChanged(int displayRotation, int width, int height) {
+void
+NativeApplication::onDisplayGeometryChanged(int displayRotation, int width, int height) {
     pRenderer->onSurfaceChanged(displayRotation, width, height);
 }
 

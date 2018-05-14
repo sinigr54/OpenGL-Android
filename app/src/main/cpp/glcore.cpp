@@ -61,7 +61,8 @@ JNI_METHOD(void, onSurfaceCreated)(JNIEnv *env, jobject, jlong nativeApp) {
 }
 
 JNI_METHOD(void, onDisplayGeometryChanged)(JNIEnv *env, jobject,
-                                           jlong nativeApp, int displayRotation, jint width, jint height) {
+                                           jlong nativeApp, int displayRotation, jint width,
+                                           jint height) {
     native(nativeApp)->onDisplayGeometryChanged(displayRotation, width, height);
 }
 

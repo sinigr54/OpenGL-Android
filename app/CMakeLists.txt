@@ -20,6 +20,7 @@ add_library( # Sets the name of the library.
 
              # Provides a relative path to your source file(s).
              src/main/cpp/glcore.cpp
+             src/main/cpp/boost/di.hpp
              src/main/cpp/utils/RenderUtils.cpp
              src/main/cpp/utils/Random.cpp
              src/main/cpp/utils/AndroidIOSystem.cpp
@@ -29,6 +30,11 @@ add_library( # Sets the name of the library.
              src/main/cpp/application/renderer/base/BaseRenderer.cpp
              src/main/cpp/application/renderer/SceneRenderer.cpp
              src/main/cpp/application/renderer/camera/Camera.cpp)
+
+# Import the ARCore library.
+add_library(arcore SHARED IMPORTED)
+set_target_properties(arcore PROPERTIES IMPORTED_LOCATION
+                      ${ARCORE_LIBPATH}/${ANDROID_ABI}/libarcore_sdk_c.so)
 
 add_library(android_assimp STATIC IMPORTED)
 set_target_properties(android_assimp PROPERTIES IMPORTED_LOCATION
@@ -63,6 +69,7 @@ target_include_directories(glcore PRIVATE
            src/main/cpp
            ${DISTRIBUTION_DIR}/assimp/include
            ${DISTRIBUTION_DIR}/opencv/include
+           ${ARCORE_INCLUDE}
            ${ANDROID_NDK}/sources/third_party/vulkan/src/libs/glm)
 
 target_link_libraries( # Specifies the target library.
