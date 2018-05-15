@@ -13,29 +13,21 @@
 class ObjectRenderer {
     std::unique_ptr<Assimp::IOSystem> ioSystem;
 
-    double delta{0.0};
+    ShaderProgram shaderProgram;
 
-    float screenWidth;
-    float screenHeight;
-
-    Camera camera{glm::vec3(0.0f, 0.0f, 8.0f)};
-
-    ShaderProgram sceneShader;
-
-    std::vector<Model> models;
+    Model model;
 
     AAssetManager *const assetManager;
 
 public:
-    ObjectRenderer(AAssetManager *assetManager, Assimp::IOSystem *);
+    ObjectRenderer(AAssetManager *assetManager, const std::string &path);
 
     ~ObjectRenderer() = default;
 
     void initialize();
 
-    void onDisplayGeometryChanged(int width, int height);
-
-    void onDraw();
+    void draw(const glm::mat4 &projectionMat, const glm::mat4 &viewMat,
+              const glm::mat4 &modelMat, const glm::vec3 &viewPosition);
 };
 
 

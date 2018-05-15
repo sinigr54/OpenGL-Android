@@ -5,6 +5,7 @@
 #include "application/GraphicalApplication.h"
 #include <AndroidJNIIOSystem.h>
 #include <application/SceneApplication.h>
+#include <application/ArApplication.h>
 
 #define JNI_METHOD(return_type, method_name) \
   extern "C" JNIEXPORT return_type JNICALL              \
@@ -34,7 +35,7 @@ JNI_METHOD(jlong, createNativeApplication)(JNIEnv *env,
     AAssetManager *aAssetManager = AAssetManager_fromJava(env, assetManager);
 
     GraphicalApplication *nativeApplication =
-            new SceneApplication(aAssetManager, internalPath);
+            new ArApplication(aAssetManager, internalPath);
 
     env->ReleaseStringUTFChars(pathToInternalDir, cPathToInternalDir);
 

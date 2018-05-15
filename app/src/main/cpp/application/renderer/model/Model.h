@@ -44,6 +44,8 @@ public:
 
     Model(Model &&other);
 
+    Model &operator=(Model &&other);
+
     void draw(ShaderProgram shaderProgram) const noexcept;
 };
 

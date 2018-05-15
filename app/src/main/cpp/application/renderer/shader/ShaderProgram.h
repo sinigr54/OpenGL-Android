@@ -143,6 +143,10 @@ public:
         program = createProgram(vertexSource, fragmentSource);
     }
 
+    GLuint getProgram() const {
+        return program;
+    }
+
     void use() const {
         glUseProgram(program);
     }

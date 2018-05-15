@@ -8,9 +8,9 @@
 #include "GraphicalApplication.h"
 
 GraphicalApplication::GraphicalApplication(AAssetManager *assetManager,
-                                     const std::string &internalDirectoryPath) :
+                                     const std::string &internalDirectory) :
         assetManager(assetManager),
-        internalDirectory(internalDirectoryPath) {
+        internalDirectory(internalDirectory) {
 }
 
 GraphicalApplication::~GraphicalApplication() {

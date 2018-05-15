@@ -22,6 +22,14 @@
   __android_log_print(ANDROID_LOG_ERROR, "OpenGLCourse", __VA_ARGS__)
 #endif  // LOGE
 
+#ifndef CHECK
+#define CHECK(condition)                                                   \
+  if (!(condition)) {                                                      \
+    LOGE("*** CHECK FAILED at %s:%d: %s", __FILE__, __LINE__, #condition); \
+    abort();                                                               \
+  }
+#endif
+
 class RenderUtils {
     static void checkGlError(const char *operation);
 

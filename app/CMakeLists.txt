@@ -31,8 +31,7 @@ add_library( # Sets the name of the library.
              src/main/cpp/application/SceneApplication.cpp
              src/main/cpp/application/ArApplication.cpp
              src/main/cpp/application/renderer/ObjectRenderer.cpp
-             src/main/cpp/application/renderer/ArObjectRenderer.cpp
-             src/main/cpp/application/renderer/ArBackgroundRenderer.cpp
+             src/main/cpp/application/renderer/BackgroundRenderer.cpp
              src/main/cpp/application/renderer/camera/Camera.cpp)
 
 # Import the ARCore library.
@@ -84,6 +83,7 @@ target_link_libraries( # Specifies the target library.
                        assimp
                        android_assimp
                        opencv
+                       arcore
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib} )

@@ -164,3 +164,13 @@ unsigned int Model::textureFromFile(const std::string &path,
 
     return textureId;
 }
+
+Model &Model::operator=(Model &&other) {
+    if (this != &other) {
+        meshes = std::move(other.meshes);
+        loadedTextures = std::move(other.loadedTextures);
+        directory = std::move(other.directory);
+    }
+
+    return *this;
+}

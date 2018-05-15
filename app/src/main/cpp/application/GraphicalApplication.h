@@ -19,7 +19,7 @@ public:
     GraphicalApplication() = delete;
 
     GraphicalApplication(AAssetManager *assetManager,
-                      const std::string &internalDirectoryPath);
+                      const std::string &internalDirectory);
 
     GraphicalApplication(const GraphicalApplication &other) = delete;
 

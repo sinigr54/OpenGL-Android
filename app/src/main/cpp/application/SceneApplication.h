@@ -9,6 +9,13 @@
 #include "GraphicalApplication.h"
 
 class SceneApplication : public GraphicalApplication {
+    float screenWidth;
+    float screenHeight;
+
+    double delta{0.0};
+
+    Camera camera{glm::vec3(0.0f, 0.0f, 8.0f)};
+
     ObjectRenderer objectRenderer;
 
 public:
