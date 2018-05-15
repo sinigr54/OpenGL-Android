@@ -47,13 +47,13 @@ class NativeRenderer(private val activity: Activity) :
     }
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
-        Log.w(TAG, "onSurfaceCreated")
+        Log.w(TAG, "initialize")
 
         NativeInterface.onSurfaceCreated(nativeApplication)
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
-        Log.w(TAG, "onSurfaceChanged")
+        Log.w(TAG, "onDisplayGeometryChanged")
 
         isViewportChanged = true
         viewportWidth = width

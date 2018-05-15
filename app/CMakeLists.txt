@@ -26,9 +26,13 @@ add_library( # Sets the name of the library.
              src/main/cpp/utils/AndroidIOSystem.cpp
              src/main/cpp/application/renderer/model/Mesh.cpp
              src/main/cpp/application/renderer/model/Model.cpp
-             src/main/cpp/application/NativeApplication.cpp
-             src/main/cpp/application/renderer/base/BaseRenderer.cpp
-             src/main/cpp/application/renderer/SceneRenderer.cpp
+             src/main/cpp/application/lifecycle/LifecycleListener.h
+             src/main/cpp/application/GraphicalApplication.cpp
+             src/main/cpp/application/SceneApplication.cpp
+             src/main/cpp/application/ArApplication.cpp
+             src/main/cpp/application/renderer/ObjectRenderer.cpp
+             src/main/cpp/application/renderer/ArObjectRenderer.cpp
+             src/main/cpp/application/renderer/ArBackgroundRenderer.cpp
              src/main/cpp/application/renderer/camera/Camera.cpp)
 
 # Import the ARCore library.

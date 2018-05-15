@@ -2,7 +2,7 @@
 // Created by sinigr on 4/15/18.
 //
 
-#include "SceneRenderer.h"
+#include "ObjectRenderer.h"
 #include "application/renderer/model/Model.h"
 
 #include <string>
@@ -13,18 +13,14 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgcodecs.hpp>
 
-SceneRenderer::SceneRenderer(AAssetManager *assetManager,
+ObjectRenderer::ObjectRenderer(AAssetManager *assetManager,
                              Assimp::IOSystem *ioSystem) :
-        BaseRenderer(assetManager),
+        assetManager(assetManager),
         ioSystem(ioSystem) {
 }
 
-SceneRenderer::~SceneRenderer() {
-
-}
-
-void SceneRenderer::onSurfaceCreated() {
-    LOGI("%s", "onSurfaceCreated");
+void ObjectRenderer::initialize() {
+    LOGI("%s", "initialize");
 
     models.clear();
     models.emplace_back(Model{"model/nanosuit.obj", ioSystem.get()});
@@ -35,15 +31,15 @@ void SceneRenderer::onSurfaceCreated() {
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 }
 
-void SceneRenderer::onSurfaceChanged(int displayRotation, int width, int height) {
-    LOGI("%s", "onSurfaceChanged");
+void ObjectRenderer::onDisplayGeometryChanged(int width, int height) {
+    LOGI("%s", "onDisplayGeometryChanged");
 
     glViewport(0, 0, width, height);
     screenWidth = static_cast<float>(width);
     screenHeight = static_cast<float>(height);
 }
 
-void SceneRenderer::onDrawFrame() {
+void ObjectRenderer::onDraw() {
     sceneShader.use();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

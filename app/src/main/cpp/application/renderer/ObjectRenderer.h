@@ -5,14 +5,12 @@
 #ifndef OPENGLCOURSE_SCENERENDERER_H
 #define OPENGLCOURSE_SCENERENDERER_H
 
-
-#include <application/renderer/base/BaseRenderer.h>
 #include <application/renderer/camera/Camera.h>
 #include <vector>
 #include <assimp/Importer.hpp>
 #include <application/renderer/model/Model.h>
 
-class SceneRenderer : public BaseRenderer {
+class ObjectRenderer {
     std::unique_ptr<Assimp::IOSystem> ioSystem;
 
     double delta{0.0};
@@ -25,16 +23,19 @@ class SceneRenderer : public BaseRenderer {
     ShaderProgram sceneShader;
 
     std::vector<Model> models;
+
+    AAssetManager *const assetManager;
+
 public:
-    SceneRenderer(AAssetManager *assetManager, Assimp::IOSystem *);
+    ObjectRenderer(AAssetManager *assetManager, Assimp::IOSystem *);
 
-    ~SceneRenderer() override;
+    ~ObjectRenderer() = default;
 
-    void onSurfaceCreated() override;
+    void initialize();
 
-    void onSurfaceChanged(int displayRotation, int width, int height) override;
+    void onDisplayGeometryChanged(int width, int height);
 
-    void onDrawFrame() override;
+    void onDraw();
 };
 
 

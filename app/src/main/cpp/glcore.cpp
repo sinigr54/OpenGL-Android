@@ -2,8 +2,9 @@
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
 #include <string>
-#include "application/NativeApplication.h"
+#include "application/GraphicalApplication.h"
 #include <AndroidJNIIOSystem.h>
+#include <application/SceneApplication.h>
 
 #define JNI_METHOD(return_type, method_name) \
   extern "C" JNIEXPORT return_type JNICALL              \
@@ -12,12 +13,12 @@
 /*
  * Representation of native application in SDK
  * */
-inline jlong applicationPointer(NativeApplication *nativeApp) {
+inline jlong applicationPointer(GraphicalApplication *nativeApp) {
     return reinterpret_cast<intptr_t>(nativeApp);
 }
 
-inline NativeApplication *native(jlong nativeApp) {
-    return reinterpret_cast<NativeApplication *>(nativeApp);
+inline GraphicalApplication *native(jlong nativeApp) {
+    return reinterpret_cast<GraphicalApplication *>(nativeApp);
 }
 
 JNI_METHOD(jlong, createNativeApplication)(JNIEnv *env,
@@ -31,12 +32,9 @@ JNI_METHOD(jlong, createNativeApplication)(JNIEnv *env,
     auto internalPath = std::string(cPathToInternalDir);
 
     AAssetManager *aAssetManager = AAssetManager_fromJava(env, assetManager);
-    Assimp::IOSystem *ioSystem = new Assimp::AndroidJNIIOSystem(aAssetManager, internalPath);
 
-    NativeApplication *nativeApplication = new NativeApplication(
-            aAssetManager,
-            ioSystem
-    );
+    GraphicalApplication *nativeApplication =
+            new SceneApplication(aAssetManager, internalPath);
 
     env->ReleaseStringUTFChars(pathToInternalDir, cPathToInternalDir);
 
@@ -61,8 +59,11 @@ JNI_METHOD(void, onSurfaceCreated)(JNIEnv *env, jobject, jlong nativeApp) {
 }
 
 JNI_METHOD(void, onDisplayGeometryChanged)(JNIEnv *env, jobject,
-                                           jlong nativeApp, int displayRotation, jint width,
+                                           jlong nativeApp,
+                                           int displayRotation,
+                                           jint width,
                                            jint height) {
+
     native(nativeApp)->onDisplayGeometryChanged(displayRotation, width, height);
 }
 

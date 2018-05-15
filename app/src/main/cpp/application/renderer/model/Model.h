@@ -36,6 +36,8 @@ class Model {
 
 public:
 
+    Model() = default;
+
     Model(const char *path, Assimp::IOSystem *ioSystem = nullptr);
 
     Model(const std::string &path, Assimp::IOSystem *ioSystem = nullptr);

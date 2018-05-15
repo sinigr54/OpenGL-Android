@@ -33,9 +33,9 @@ class Camera {
 
     void updateCameraVectors() {
         glm::vec3 front;
-        front.x = static_cast<float>(cos(glm::radians(yaw)) * cos(glm::radians(pitch)));
-        front.y = static_cast<float>(sin(glm::radians(pitch)));
-        front.z = static_cast<float>(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
+        front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        front.y = sin(glm::radians(pitch));
+        front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
         this->front = glm::normalize(front);
         this->right = glm::normalize(glm::cross(this->front, this->worldUp));

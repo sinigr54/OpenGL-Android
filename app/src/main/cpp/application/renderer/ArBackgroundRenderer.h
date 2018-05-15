@@ -1,0 +1,14 @@
+//
+// Created by Alexander Chekh on 15.05.2018.
+//
+
+#ifndef OPENGLCOURSE_ARBACKGROUNDRENDERER_H
+#define OPENGLCOURSE_ARBACKGROUNDRENDERER_H
+
+
+class ArBackgroundRenderer {
+
+};
+
+
+#endif //OPENGLCOURSE_ARBACKGROUNDRENDERER_H
