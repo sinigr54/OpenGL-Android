@@ -28,6 +28,9 @@ public:
 
     void draw(const glm::mat4 &projectionMat, const glm::mat4 &viewMat,
               const glm::mat4 &modelMat, const glm::vec3 &viewPosition);
+
+    void drawAr(const glm::mat4 &projectionMat, const glm::mat4 &viewMat,
+                const glm::mat4 &modelMat);
 };
 
 

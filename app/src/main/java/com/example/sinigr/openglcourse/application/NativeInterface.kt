@@ -27,11 +27,13 @@ object NativeInterface {
 
     external fun onResume(nativeApplication: Long, context: Context, activity: Activity)
 
-    external fun onSurfaceCreated(nativeApplication: Long);
+    external fun onSurfaceCreated(nativeApplication: Long)
 
     external fun onDisplayGeometryChanged(nativeApplication: Long, displayRotation: Int, width: Int, height: Int);
 
-    external fun onDrawFrame(nativeApplication: Long);
+    external fun onDrawFrame(nativeApplication: Long)
+
+    external fun onTouched(nativeApplication: Long, x: Float, y: Float)
 
     /* Called from native code */
     @JvmStatic

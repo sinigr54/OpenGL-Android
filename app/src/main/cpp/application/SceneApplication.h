@@ -5,7 +5,6 @@
 #ifndef OPENGLCOURSE_SCENEAPPLICATION_H
 #define OPENGLCOURSE_SCENEAPPLICATION_H
 
-
 #include "GraphicalApplication.h"
 
 class SceneApplication : public GraphicalApplication {
@@ -31,6 +30,8 @@ public:
     void onDisplayGeometryChanged(int displayRotation, int width, int height) override;
 
     void onDrawFrame() override;
+
+    void onTouched(float x, float y) override;
 };
 
 

@@ -14,7 +14,7 @@
 
 #ifndef LOGI
 #define LOGI(...) \
-  __android_log_print(ANDROID_LOG_INFO, "OpenGLCourse", __VA_ARGS__)
+  __android_log_print(ANDROID_LOG_WARN, "OpenGLCourse", __VA_ARGS__)
 #endif  // LOGI
 
 #ifndef LOGE
@@ -29,6 +29,41 @@
     abort();                                                               \
   }
 #endif
+
+#include "arcore_c_api.h"
+#include "glm.hpp"
+
+// Provides a scoped allocated instance of Anchor.
+// Can be treated as an ArAnchor*.
+class ScopedArPose {
+public:
+    explicit ScopedArPose(const ArSession *session) {
+        ArPose_create(session, nullptr, &pose_);
+    }
+
+    ~ScopedArPose() { ArPose_destroy(pose_); }
+
+    ArPose *getArPose() { return pose_; }
+
+    // Delete copy constructors.
+    ScopedArPose(const ScopedArPose &) = delete;
+
+    void operator=(const ScopedArPose &) = delete;
+
+private:
+    ArPose *pose_;
+};
+
+// Get the plane's normal from center pose.
+glm::vec3 getPlaneNormal(const ArSession* arSession, const ArPose& arPlanePos);
+
+float calculateDistanceToPlane(const ArSession *ar_session,
+                               const ArPose &plane_pose,
+                               const ArPose &camera_pose);
+
+void getTransformMatrixFromAnchor(ArSession *arSession,
+                                  const ArAnchor *arAnchor,
+                                  glm::mat4 *outModelMat);
 
 class RenderUtils {
     static void checkGlError(const char *operation);

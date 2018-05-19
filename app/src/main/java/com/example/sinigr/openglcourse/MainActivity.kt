@@ -22,6 +22,8 @@ class MainActivity : AppCompatActivity() {
         renderer = NativeRenderer(this)
         glView = GLView(this, renderer)
 
+        glView.nativeApplication = renderer.nativeApplication
+
         setContentView(glView)
     }
 

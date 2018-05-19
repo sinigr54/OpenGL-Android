@@ -32,6 +32,9 @@ void SceneApplication::onDisplayGeometryChanged(int displayRotation, int width, 
 }
 
 void SceneApplication::onDrawFrame() {
+    glEnable(GL_DEPTH_TEST);
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+
     glm::mat4 view;
     glm::mat4 projection;
     glm::mat4 model;
@@ -53,4 +56,8 @@ void SceneApplication::onDrawFrame() {
     if (delta > 10000.0) {
         delta = 0.0;
     }
+}
+
+void SceneApplication::onTouched(float x, float y) {
+    // Nothing
 }

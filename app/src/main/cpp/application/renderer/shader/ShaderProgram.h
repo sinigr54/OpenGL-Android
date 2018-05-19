@@ -151,6 +151,10 @@ public:
         glUseProgram(program);
     }
 
+    void unUse() const {
+        glUseProgram(0);
+    }
+
     void setUniform(const std::string &parameter, GLfloat value) const {
         glUniform1f(glGetUniformLocation(program, parameter.c_str()), value);
     }
@@ -165,6 +169,11 @@ public:
 
     void setUniform(const std::string &parameter, const glm::vec3 &value) const {
         glUniform3f(glGetUniformLocation(program, parameter.c_str()), value.x, value.y, value.z);
+    }
+
+    void setUniform(const std::string &parameter, const glm::vec4 &value) const {
+        glUniform4f(glGetUniformLocation(program, parameter.c_str()),
+                    value[0], value[1], value[2], value[3]);
     }
 
     void setUniform(const std::string &parameter, const glm::mat4 &value) const {

@@ -6,6 +6,7 @@ import android.opengl.GLSurfaceView
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
+import com.example.sinigr.openglcourse.application.NativeInterface
 import com.example.sinigr.openglcourse.glcore.renderer.NativeRenderer
 
 @SuppressLint("ViewConstructor")
@@ -33,6 +34,8 @@ class GLView(context: Context, renderer: Renderer) : GLSurfaceView(context) {
 
     private lateinit var gameThread: Thread
 
+    var nativeApplication: Long = 0L
+
     init {
         setEGLContextClientVersion(GL_VERSION)
 
@@ -44,8 +47,13 @@ class GLView(context: Context, renderer: Renderer) : GLSurfaceView(context) {
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         when (event?.action) {
-            MotionEvent.ACTION_MOVE -> {
-                requestRender()
+            MotionEvent.ACTION_DOWN -> {
+                val x = event.x
+                val y = event.y
+
+                if (nativeApplication != 0L) {
+                    NativeInterface.onTouched(nativeApplication, x, y)
+                }
             }
         }
 

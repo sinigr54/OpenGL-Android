@@ -4,6 +4,7 @@ out vec4 color;
 in vec2 outTexCoords;
 in vec3 outNormal;
 in vec3 outFragmentPosition;
+in vec3 viewPosition;
 
 struct DirectionLight {
     vec3 direction;
@@ -16,12 +17,14 @@ struct DirectionLight {
 struct Material {
     sampler2D texture_diffuse1;
     sampler2D texture_diffuse2;
+    sampler2D texture_diffuse3;
     sampler2D texture_specular1;
     sampler2D texture_specular2;
+    sampler2D texture_specular3;
     float shininess;
 };
 
-uniform vec3 viewPosition;
+//uniform vec3 viewPosition;
 uniform DirectionLight directionLight;
 uniform Material material;
 

@@ -72,6 +72,11 @@ JNI_METHOD(void, onDrawFrame)(JNIEnv *env, jobject, jlong nativeApp) {
     native(nativeApp)->onDrawFrame();
 }
 
+JNI_METHOD(void, onTouched)
+(JNIEnv *, jclass, jlong nativeApp, jfloat x, jfloat y) {
+    native(nativeApp)->onTouched(x, y);
+}
+
 
 
 

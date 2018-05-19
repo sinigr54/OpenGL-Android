@@ -22,7 +22,7 @@ class NativeRenderer(private val activity: Activity) :
     private var viewportWidth: Int = 0
     private var viewportHeight: Int = 0
 
-    private var nativeApplication: Long = 0L
+    var nativeApplication: Long = 0L
 
     init {
         /*

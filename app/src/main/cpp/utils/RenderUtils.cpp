@@ -4,7 +4,54 @@
 
 #include <android/asset_manager.h>
 #include <jni.h>
+
+#include <gtx/quaternion.hpp>
+#include "glm.hpp"
+#include <gtc/type_ptr.hpp>
+
 #include "RenderUtils.h"
+
+glm::vec3 getPlaneNormal(const ArSession *arSession,
+                         const ArPose &arPlanePos) {
+    float planePoseRaw[7] = {0.f};
+    ArPose_getPoseRaw(arSession, &arPlanePos, planePoseRaw);
+    glm::quat plane_quaternion(planePoseRaw[3], planePoseRaw[0],
+                               planePoseRaw[1], planePoseRaw[2]);
+    // Get normal vector, normal is defined to be positive Y-position in local
+    // frame.
+    return glm::rotate(plane_quaternion, glm::vec3(0., 1.f, 0.));
+}
+
+float calculateDistanceToPlane(const ArSession *ar_session, const ArPose &plane_pose,
+                               const ArPose &camera_pose) {
+    float plane_pose_raw[7] = {0.f};
+    ArPose_getPoseRaw(ar_session, &plane_pose, plane_pose_raw);
+    glm::vec3 plane_position(plane_pose_raw[4], plane_pose_raw[5],
+                             plane_pose_raw[6]);
+    glm::vec3 normal = getPlaneNormal(ar_session, plane_pose);
+
+    float camera_pose_raw[7] = {0.f};
+    ArPose_getPoseRaw(ar_session, &camera_pose, camera_pose_raw);
+    glm::vec3 camera_P_plane(camera_pose_raw[4] - plane_position.x,
+                             camera_pose_raw[5] - plane_position.y,
+                             camera_pose_raw[6] - plane_position.z);
+
+    return glm::dot(normal, camera_P_plane);
+}
+
+void getTransformMatrixFromAnchor(ArSession *arSession, const ArAnchor *arAnchor,
+                                  glm::mat4 *outModelMat) {
+    if (outModelMat == nullptr) {
+        LOGE("RenderUtils::getTransformMatrixFromAnchor model matrix is null.");
+        return;
+    }
+
+    ScopedArPose pose(arSession);
+    ArAnchor_getPose(arSession, arAnchor, pose.getArPose());
+    ArPose_getMatrix(arSession, pose.getArPose(),
+                     glm::value_ptr(*outModelMat));
+
+}
 
 void RenderUtils::checkGlError(const char *operation) {
     for (GLint error = glGetError(); error; error = glGetError()) {

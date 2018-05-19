@@ -32,6 +32,8 @@ public:
     virtual void onDisplayGeometryChanged(int displayRotation, int width, int height) = 0;
 
     virtual void onDrawFrame() = 0;
+
+    virtual void onTouched(float x, float y) = 0;
 };
 
 

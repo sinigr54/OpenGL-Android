@@ -11,6 +11,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <application/renderer/PlaneRenderer.h>
 
 class ArApplication : public GraphicalApplication {
     ArSession *arSession = nullptr;
@@ -28,9 +29,13 @@ class ArApplication : public GraphicalApplication {
     std::unordered_map<ArPlane*, glm::vec3> planeColorMap;
 
     bool isFistPlaneHasBeenDetected = false;
+    int planeCount = 0;
 
     BackgroundRenderer backgroundRenderer;
     ObjectRenderer objectRenderer;
+    PlaneRenderer planeRenderer;
+
+    Camera camera{glm::vec3(0.0f, 0.0f, 8.0f)};
 
 public:
 
@@ -48,6 +53,8 @@ public:
     void onDisplayGeometryChanged(int displayRotation, int width, int height) override;
 
     void onDrawFrame() override;
+
+    void onTouched(float x, float y) override;
 };
 
 

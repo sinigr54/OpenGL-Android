@@ -14,6 +14,13 @@ const GLfloat gUvs[] = {
         0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 };
 
+const GLfloat gCoordinates[]{
+        -1.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+        +1.0f, -1.0f, 0.0f, 1.0f, 1.0f,
+        -1.0f, +1.0f, 0.0f, 0.0f, 0.0f,
+        +1.0f, +1.0f, 0.0f, 1.0f, 0.0f
+};
+
 constexpr char gVertexShader[] = R"(
     attribute vec4 vertex;
     attribute vec2 textureCoords;
@@ -40,8 +47,10 @@ void BackgroundRenderer::initialize() {
     glTexParameteri(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    attributeVertices = static_cast<GLuint>(glGetAttribLocation(shaderProgram.getProgram(), "vertex"));
-    attributeUvs = static_cast<GLuint>(glGetAttribLocation(shaderProgram.getProgram(), "textureCoords"));
+    attributeVertices = static_cast<GLuint>(glGetAttribLocation(shaderProgram.getProgram(),
+                                                                "vertex"));
+    attributeUvs = static_cast<GLuint>(glGetAttribLocation(shaderProgram.getProgram(),
+                                                           "textureCoords"));
 }
 
 void BackgroundRenderer::draw(const ArSession *arSession, const ArFrame *arFrame) {
@@ -62,6 +71,9 @@ void BackgroundRenderer::draw(const ArSession *arSession, const ArFrame *arFrame
                                          gNumVertices * 2,
                                          gUvs,
                                          transformedUvs);
+
+        updateGraphicContext();
+
         isUvsInitialized = true;
     }
 
@@ -73,20 +85,66 @@ void BackgroundRenderer::draw(const ArSession *arSession, const ArFrame *arFrame
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_EXTERNAL_OES, textureId);
 
-    glEnableVertexAttribArray(attributeVertices);
+    glBindVertexArray(VAO);
+
+    /*glEnableVertexAttribArray(attributeVertices);
     glVertexAttribPointer(attributeVertices, 3, GL_FLOAT, GL_FALSE, 0,
                           gVertices);
 
     glEnableVertexAttribArray(attributeUvs);
     glVertexAttribPointer(attributeUvs, 2, GL_FLOAT, GL_FALSE, 0,
-                          transformedUvs);
+                          transformedUvs);*/
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-    glUseProgram(0);
+    glBindVertexArray(0);
+
+    shaderProgram.unUse();
     glDepthMask(GL_TRUE);
 }
 
 GLuint BackgroundRenderer::getTextureId() const {
     return textureId;
+}
+
+void BackgroundRenderer::updateGraphicContext() {
+    vertices.clear();
+
+    for (auto i = 0; i < gNumVertices; ++i) {
+        const auto iVertex = i * VERTEX_SIZE;
+        const auto iCoords = i * COORDS_SIZE;
+
+        vertices.emplace_back<Vertex>({
+                                              glm::vec3(gVertices[iVertex],
+                                                        gVertices[iVertex + 1],
+                                                        gVertices[iVertex + 2]),
+                                              glm::vec2(transformedUvs[iCoords],
+                                                        transformedUvs[iCoords + 1])
+                                      });
+    }
+
+    if (!isUvsInitialized) {
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
+    }
+
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER,
+                 static_cast<GLsizeiptr>(vertices.size() * sizeof(Vertex)),
+                 &vertices[0],
+                 GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(attributeVertices);
+    glVertexAttribPointer(attributeVertices, 3, GL_FLOAT, GL_FALSE,
+                          sizeof(Vertex),
+                          (GLvoid *) 0);
+
+    glEnableVertexAttribArray(attributeUvs);
+    glVertexAttribPointer(attributeUvs, 2, GL_FLOAT, GL_FALSE,
+                          sizeof(Vertex),
+                          (GLvoid *) offsetof(Vertex, textureCoords));
+
+    glBindVertexArray(0);
 }
